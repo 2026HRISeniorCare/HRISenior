@@ -1,0 +1,17 @@
+{
+    "cmake.sourceDirectory": "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.includePath": [
+        "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main/main",
+        "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main/main/emotion",
+        "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main/main/uart_k210",
+        "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main/main/audio",
+        "C:/Users/25453/Desktop/HRISenior/HRI-SeniorCare/Main/main/protocols",
+        "C:/Users/25453/Desktop/HRISenior/.vscode/stubs",
+        "C:/Users/25453/Desktop/HRISenior/.vscode/stubs/driver"
+    ],
+    "idf.espIdfPath": "C:/Users/25453/esp-idf",
+    "idf.toolsPath": "C:/Users/25453/.espressif",
+    "idf.pythonInstallPath": "C:/Users/25453/AppData/Local/Programs/Python/Python313/python.exe",
+    "idf.flashType": "UART"
+}

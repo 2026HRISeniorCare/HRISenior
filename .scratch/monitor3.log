@@ -1,0 +1,32 @@
+MSys/Mingw is no longer supported. Please follow the getting started guide of the documentation in order to set up a suitiable environment, or continue at your own risk.
+WARNING: MSys/Mingw is not officially supported; continuing at your own risk.
+WARNING: Python interpreter "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe" used to start idf.py is not from installed venv "C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env"
+Executing action: flash
+Running ninja in directory C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build
+Executing "ninja flash"...
+[1/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/partition_table/partition-table.bin C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/xiaozhi.bin"
+xiaozhi.bin binary size 0x26bc40 bytes. Smallest app partition is 0x3f0000 bytes. 0x1843c0 bytes (39%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\bootloader\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/bootloader/bootloader.bin"
+Bootloader binary size 0x4040 bytes. 0x3fc0 bytes (50%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\esp-idf-v54\components\esptool_py && C:\Users\25453\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/25453/esp-idf-v54 -D SERIAL_TOOL=C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build -P C:/Users/25453/esp-idf-v54/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32s3 -p COM5 -b 115200 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB 0x0 bootloader/bootloader.bin 0x20000 xiaozhi.bin 0x8000 partition_table/partition-table.bin 0xd000 ota_data_initial.bin 0x800000 generated_assets.bin
+esptool.py v4.11.0
+Serial port COM5
+Connecting......................................
+
+A fatal error occurred: Failed to connect to ESP32-S3: No serial data received.
+For troubleshooting steps visit: https://docs.espressif.com/projects/esptool/en/latest/troubleshooting.html
+CMake Error at run_serial_tool.cmake:67 (message):
+  
+  C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3
+  failed.
+
+
+
+FAILED: CMakeFiles/flash C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/CMakeFiles/flash 
+C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\esp-idf-v54\components\esptool_py && C:\Users\25453\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/25453/esp-idf-v54 -D SERIAL_TOOL=C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build -P C:/Users/25453/esp-idf-v54/components/esptool_py/run_serial_tool.cmake"
+ninja: build stopped: subcommand failed.
+ninja failed with exit code 1, output of the command is in the C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\log\idf_py_stderr_output_27084 and C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\log\idf_py_stdout_output_27084

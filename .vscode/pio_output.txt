@@ -1,0 +1,4 @@
+Processing esp32-s3-devkitc-1 (platform: espressif32; board: esp32-s3-devkitc-1; framework: espidf)
+--------------------------------------------------------------------------------
+Tool Manager: Installing platformio/toolchain-riscv32-esp @ 14.2.0+20251107
+Downloading 0% 10% 20% 30%

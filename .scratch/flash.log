@@ -1,0 +1,170 @@
+MSys/Mingw is no longer supported. Please follow the getting started guide of the documentation in order to set up a suitiable environment, or continue at your own risk.
+WARNING: MSys/Mingw is not officially supported; continuing at your own risk.
+WARNING: Python interpreter "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe" used to start idf.py is not from installed venv "C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env"
+Executing action: flash
+Running ninja in directory C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build
+Executing "ninja flash"...
+[1/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/partition_table/partition-table.bin C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/xiaozhi.bin"
+xiaozhi.bin binary size 0x26b900 bytes. Smallest app partition is 0x3f0000 bytes. 0x184700 bytes (39%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\bootloader\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/bootloader/bootloader.bin"
+Bootloader binary size 0x4040 bytes. 0x3fc0 bytes (50%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\esp-idf-v54\components\esptool_py && C:\Users\25453\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/25453/esp-idf-v54 -D SERIAL_TOOL=C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build -P C:/Users/25453/esp-idf-v54/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32s3 -p COM5 -b 115200 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB 0x0 bootloader/bootloader.bin 0x20000 xiaozhi.bin 0x8000 partition_table/partition-table.bin 0xd000 ota_data_initial.bin 0x800000 generated_assets.bin
+esptool.py v4.11.0
+Serial port COM5
+Connecting...
+Chip is ESP32-S3 (QFN56) (revision v0.2)
+Features: WiFi, BLE, Embedded PSRAM 8MB (AP_3v3)
+Crystal is 40MHz
+MAC: ac:a7:04:e0:fa:f0
+Uploading stub...
+Running stub...
+Stub running...
+Configuring flash size...
+Flash will be erased from 0x00000000 to 0x00004fff...
+Flash will be erased from 0x00020000 to 0x0028bfff...
+Flash will be erased from 0x00008000 to 0x00008fff...
+Flash will be erased from 0x0000d000 to 0x0000efff...
+Flash will be erased from 0x00800000 to 0x00889fff...
+SHA digest in image updated
+Compressed 16448 bytes to 11405...
+Writing at 0x00000000... (100 %)
+Wrote 16448 bytes (11405 compressed) at 0x00000000 in 1.2 seconds (effective 111.7 kbit/s)...
+Hash of data verified.
+Compressed 2537728 bytes to 1508901...
+Writing at 0x00020000... (1 %)
+Writing at 0x0002bb46... (2 %)
+Writing at 0x00039633... (3 %)
+Writing at 0x00045490... (4 %)
+Writing at 0x0004b7b0... (5 %)
+Writing at 0x0004f9d0... (6 %)
+Writing at 0x00054039... (7 %)
+Writing at 0x00059035... (8 %)
+Writing at 0x000686cf... (9 %)
+Writing at 0x00072f9e... (10 %)
+Writing at 0x0007a4eb... (11 %)
+Writing at 0x00080913... (12 %)
+Writing at 0x000854c1... (13 %)
+Writing at 0x0008a1d7... (15 %)
+Writing at 0x0008f196... (16 %)
+Writing at 0x00094841... (17 %)
+Writing at 0x0009d49f... (18 %)
+Writing at 0x000a6458... (19 %)
+Writing at 0x000ba230... (20 %)
+Writing at 0x000c8831... (21 %)
+Writing at 0x000ceeae... (22 %)
+Writing at 0x000d4b9c... (23 %)
+Writing at 0x000da62b... (24 %)
+Writing at 0x000e0ad0... (25 %)
+Writing at 0x000e7544... (26 %)
+Writing at 0x000ed5b0... (27 %)
+Writing at 0x000f3c81... (29 %)
+Writing at 0x000f9ef5... (30 %)
+Writing at 0x000ff3e0... (31 %)
+Writing at 0x001043a5... (32 %)
+Writing at 0x00109404... (33 %)
+Writing at 0x0010e33c... (34 %)
+Writing at 0x001134b9... (35 %)
+Writing at 0x0011872e... (36 %)
+Writing at 0x0011d495... (37 %)
+Writing at 0x001227d9... (38 %)
+Writing at 0x00128027... (39 %)
+Writing at 0x0012e061... (40 %)
+Writing at 0x00134406... (41 %)
+Writing at 0x001398e0... (43 %)
+Writing at 0x0013ef3e... (44 %)
+Writing at 0x0014502c... (45 %)
+Writing at 0x0014c237... (46 %)
+Writing at 0x00151fac... (47 %)
+Writing at 0x0016e249... (48 %)
+Writing at 0x00178e62... (49 %)
+Writing at 0x0017e46e... (50 %)
+Writing at 0x00183fd3... (51 %)
+Writing at 0x00189762... (52 %)
+Writing at 0x0018ea5a... (53 %)
+Writing at 0x001946af... (54 %)
+Writing at 0x00199acd... (55 %)
+Writing at 0x0019ee7f... (56 %)
+Writing at 0x001a4486... (58 %)
+Writing at 0x001aa828... (59 %)
+Writing at 0x001afbe6... (60 %)
+Writing at 0x001b59a4... (61 %)
+Writing at 0x001bb791... (62 %)
+Writing at 0x001c0dd4... (63 %)
+Writing at 0x001c603a... (64 %)
+Writing at 0x001cb385... (65 %)
+Writing at 0x001d0603... (66 %)
+Writing at 0x001d5f05... (67 %)
+Writing at 0x001db9bc... (68 %)
+Writing at 0x001e0ac0... (69 %)
+Writing at 0x001e61c0... (70 %)
+Writing at 0x001eb7c5... (72 %)
+Writing at 0x001f0c79... (73 %)
+Writing at 0x001f5c2b... (74 %)
+Writing at 0x001faaf4... (75 %)
+Writing at 0x001fff40... (76 %)
+Writing at 0x002052de... (77 %)
+Writing at 0x0020a569... (78 %)
+Writing at 0x0020f710... (79 %)
+Writing at 0x00214fbe... (80 %)
+Writing at 0x0021aa2f... (81 %)
+Writing at 0x0021fa60... (82 %)
+Writing at 0x00224c23... (83 %)
+Writing at 0x0022c819... (84 %)
+Writing at 0x00234394... (86 %)
+Writing at 0x0023bfc6... (87 %)
+Writing at 0x002434cb... (88 %)
+Writing at 0x00249170... (89 %)
+Writing at 0x0024ec70... (90 %)
+Writing at 0x002545a1... (91 %)
+Writing at 0x00259d87... (92 %)
+Writing at 0x00261d4d... (93 %)
+Writing at 0x0026ba8f... (94 %)
+Writing at 0x002721d2... (95 %)
+Writing at 0x0027753e... (96 %)
+Writing at 0x0027d6ae... (97 %)
+Writing at 0x00284960... (98 %)
+Writing at 0x0028af2e... (100 %)
+Wrote 2537728 bytes (1508901 compressed) at 0x00020000 in 131.9 seconds (effective 153.9 kbit/s)...
+Hash of data verified.
+Compressed 3072 bytes to 142...
+Writing at 0x00008000... (100 %)
+Wrote 3072 bytes (142 compressed) at 0x00008000 in 0.1 seconds (effective 471.7 kbit/s)...
+Hash of data verified.
+Compressed 8192 bytes to 31...
+Writing at 0x0000d000... (100 %)
+Wrote 8192 bytes (31 compressed) at 0x0000d000 in 0.1 seconds (effective 1222.1 kbit/s)...
+Hash of data verified.
+Compressed 563468 bytes to 365329...
+Writing at 0x00800000... (4 %)
+Writing at 0x0080ccfd... (8 %)
+Writing at 0x0081198a... (13 %)
+Writing at 0x00816345... (17 %)
+Writing at 0x0081ac1a... (21 %)
+Writing at 0x0081f68a... (26 %)
+Writing at 0x0082430b... (30 %)
+Writing at 0x00833ac3... (34 %)
+Writing at 0x00841209... (39 %)
+Writing at 0x00845a5c... (43 %)
+Writing at 0x0084abc0... (47 %)
+Writing at 0x0085058e... (52 %)
+Writing at 0x00854645... (56 %)
+Writing at 0x0085920e... (60 %)
+Writing at 0x0085e418... (65 %)
+Writing at 0x00863776... (69 %)
+Writing at 0x00869095... (73 %)
+Writing at 0x0086ebc0... (78 %)
+Writing at 0x008743e3... (82 %)
+Writing at 0x00878bf3... (86 %)
+Writing at 0x0087d8bd... (91 %)
+Writing at 0x00882bce... (95 %)
+Writing at 0x0088800b... (100 %)
+Wrote 563468 bytes (365329 compressed) at 0x00800000 in 32.0 seconds (effective 141.0 kbit/s)...
+Hash of data verified.
+
+Leaving...
+Hard resetting via RTS pin...
+Done
