@@ -21,13 +21,13 @@ Merged 2 ELF sections
 Successfully created esp32s3 image.
 Generated C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/xiaozhi.bin
 [9/9] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/partition_table/partition-table.bin C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/xiaozhi.bin"
-xiaozhi.bin binary size 0x26bc40 bytes. Smallest app partition is 0x3f0000 bytes. 0x1843c0 bytes (39%) free.
+xiaozhi.bin binary size 0x27c5e0 bytes. Smallest app partition is 0x3f0000 bytes. 0x173a20 bytes (37%) free.
 
 Project build complete. To flash, run:
  idf.py flash
 or
  idf.py -p PORT flash
 or
- python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash --flash_mode dio --flash_size 16MB --flash_freq 80m 0x0 Main\build\bootloader\bootloader.bin 0x8000 Main\build\partition_table\partition-table.bin 0xd000 Main\build\ota_data_initial.bin 0x20000 Main\build\xiaozhi.bin 0x800000 Main\build\generated_assets.bin
+ python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash --flash_mode dio --flash_size 16MB --flash_freq 80m 0x0 HRI-SeniorCare\Main\build\bootloader\bootloader.bin 0x8000 HRI-SeniorCare\Main\build\partition_table\partition-table.bin 0xd000 HRI-SeniorCare\Main\build\ota_data_initial.bin 0x20000 HRI-SeniorCare\Main\build\xiaozhi.bin 0x800000 HRI-SeniorCare\Main\build\generated_assets.bin
 or from the "C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build" directory
  python -m esptool --chip esp32s3 -b 460800 --before default_reset --after hard_reset write_flash "@flash_args"

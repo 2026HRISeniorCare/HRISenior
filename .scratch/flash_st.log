@@ -1,0 +1,70 @@
+MSys/Mingw is no longer supported. Please follow the getting started guide of the documentation in order to set up a suitiable environment, or continue at your own risk.
+WARNING: MSys/Mingw is not officially supported; continuing at your own risk.
+WARNING: Python interpreter "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe" used to start idf.py is not from installed venv "C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env"
+Executing action: flash
+Running ninja in directory C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build
+Executing "ninja flash"...
+[1/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 partition --type app C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/partition_table/partition-table.bin C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/xiaozhi.bin"
+xiaozhi.bin binary size 0x27c5d0 bytes. Smallest app partition is 0x3f0000 bytes. 0x173a30 bytes (37%) free.
+[2/5] Performing build step for 'bootloader'
+[1/1] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\Main\build\bootloader\esp-idf\esptool_py && C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Scripts\python.exe C:/Users/25453/esp-idf-v54/components/partition_table/check_sizes.py --offset 0x8000 bootloader 0x0 C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/bootloader/bootloader.bin"
+Bootloader binary size 0x4040 bytes. 0x3fc0 bytes (50%) free.
+[3/5] No install step for 'bootloader'
+[4/5] Completed 'bootloader'
+[4/5] C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\esp-idf-v54\components\esptool_py && C:\Users\25453\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/25453/esp-idf-v54 -D SERIAL_TOOL=C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build -P C:/Users/25453/esp-idf-v54/components/esptool_py/run_serial_tool.cmake"
+esptool.py --chip esp32s3 -p COM5 -b 115200 --before=default_reset --after=hard_reset write_flash --flash_mode dio --flash_freq 80m --flash_size 16MB 0x0 bootloader/bootloader.bin 0x20000 xiaozhi.bin 0x8000 partition_table/partition-table.bin 0xd000 ota_data_initial.bin 0x800000 generated_assets.bin
+esptool.py v4.11.0
+Serial port COM5
+
+A fatal error occurred: Could not open COM5, the port is busy or doesn't exist.
+(could not open port 'COM5': PermissionError(13, '¾Ü¾ø·ÃÎÊ¡£', None, 5))
+
+CMake Error at run_serial_tool.cmake:67 (message):
+  
+  C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3
+  failed.
+
+
+
+FAILED: CMakeFiles/flash C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build/CMakeFiles/flash 
+C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\25453\esp-idf-v54\components\esptool_py && C:\Users\25453\.espressif\tools\cmake\3.30.2\bin\cmake.exe -D IDF_PATH=C:/Users/25453/esp-idf-v54 -D SERIAL_TOOL=C:/Users/25453/.espressif/python_env/idf5.4_py3.13_env/Scripts/python.exe;;C:/Users/25453/esp-idf-v54/components/esptool_py/esptool/esptool.py;--chip;esp32s3 -D SERIAL_TOOL_ARGS=--before=default_reset;--after=hard_reset;write_flash;@flash_args -D WORKING_DIRECTORY=C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/Main/build -P C:/Users/25453/esp-idf-v54/components/esptool_py/run_serial_tool.cmake"
+ninja: build stopped: subcommand failed.
+Traceback (most recent call last):
+  File "C:\Users\25453\esp-idf-v54\tools\idf.py", line 841, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf.py", line 745, in main
+    cli(argv, prog_name=PROG, complete_var=SHELL_COMPLETE_VAR)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Lib\site-packages\click\core.py", line 1161, in __call__
+    return self.main(*args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Lib\site-packages\click\core.py", line 1082, in main
+    rv = self.invoke(ctx)
+  File "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Lib\site-packages\click\core.py", line 1729, in invoke
+    return _process_result(rv)
+  File "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Lib\site-packages\click\core.py", line 1666, in _process_result
+    value = ctx.invoke(self._result_callback, value, **ctx.params)
+  File "C:\Users\25453\.espressif\python_env\idf5.4_py3.13_env\Lib\site-packages\click\core.py", line 788, in invoke
+    return __callback(*args, **kwargs)
+  File "C:\Users\25453\esp-idf-v54\tools\idf.py", line 640, in execute_tasks
+    task(ctx, global_args, task.action_args)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf.py", line 212, in __call__
+    self.callback(self.name, context, global_args, **action_args)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf_py_actions\serial_ext.py", line 249, in flash
+    run_target(action, args, env, force_progression=True)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf_py_actions\tools.py", line 499, in run_target
+    RunTool(generator_cmd[0], generator_cmd + [target_name], args.build_dir, env, custom_error_handler, hints=not args.no_hints,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+            force_progression=force_progression, interactive=interactive)()
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf_py_actions\tools.py", line 333, in __call__
+    for hint in generate_hints(stderr_output_file, stdout_output_file):
+                ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\25453\esp-idf-v54\tools\idf_py_actions\tools.py", line 267, in generate_hints
+    yield from generate_hints_buffer(file.read(), hints)
+                                     ~~~~~~~~~^^
+UnicodeDecodeError: 'gbk' codec can't decode byte 0x82 in position 2319: illegal multibyte sequence

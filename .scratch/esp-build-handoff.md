@@ -3,7 +3,155 @@
 > 目标:把这份带 SIEVOX 情绪集成的 xiaozhi 固件,在本机 ESP-IDF v5.4 编译出来并烧录到 ESP32-S3。
 > 新会话开场只需说:「读 .scratch/esp-build-handoff.md,接着编译烧录」。
 
-## 更新 2026-07-12c(编译+烧录成功,固件启动但卡在板级初始化 · 读这段最新)
+## 更新 2026-07-12i(✅✅ 端到端全链路跑通 · 大功告成)
+
+**从固件到后端 DeepSeek + 情绪注入,整套 SIEVOX 助老对话闭环已实机验证成功。**
+
+- **空间死结解法**:C 盘满 → 删损坏镜像 + `docker system prune` + **删 11GB 的 docker_data.vhdx**(稀疏盘不自动缩,删了 Docker 重建)→ 回收 ~12GB。重启 Docker 干净重拉镜像。
+- **镜像损坏解法**:官方镜像在磁盘满时拉取导致 `config/logger.py`、`urllib3/exceptions.py` 等空文件 → compose `volumes` 加 `- ./:/opt/xiaozhi-esp32-server` 挂仓库源码覆盖(同时让情绪注入代码生效)。干净重拉后镜像自身也好了。
+- **容器反复 Restarting(exit 0)解法**:app.py 的 `monitor_stdin/ainput` 在无 stdin 时 EOF 退出 → compose 加 `stdin_open: true` + `tty: true` + `command: sh -c "tail -f /dev/null | python app.py"`。
+- **后端启动成功日志**:`初始化组件: llm成功 DeepSeekLLM` / `asr成功 FunASR` / `vad成功 SileroVAD`;`running restarts=0`;设备视角 `192.168.43.5:8003 → HTTP 200`。
+- **设备接入 + 情绪注入实证**(docker logs):
+  - `core.handle.textHandle - 情感状态更新: happy (72%)`(每秒,我们加的拦截代码✅)
+  - `识别文本: 我最近感觉有点孤单` → 安安回复:「孤单的时候最需要人陪了,我就在这儿呢,你想聊啥我都陪着您,慢慢来,不急～」
+  - `我好难过啊😔` → 「别难过呀,有我陪着您呢」
+  - DeepSeek 全程走"安安"助老人设 + 温柔关怀语气 ✅
+
+**部署速查(重启后如何再起后端)**:
+```bash
+cd "C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/xiaozhi-esp32-server/main/xiaozhi-server"
+docker compose up -d
+docker logs -f xiaozhi-esp32-server
+```
+设备 OTA URL = `http://192.168.43.5:8003/xiaozhi/ota/`(电脑与设备同连 Mate 60 Pro 热点)。
+配置在 `data/.config.yaml`(DeepSeek key/IP/安安人设)。情绪注入代码在 core/handle/textHandle.py + core/connection.py + core/utils/dialogue.py(靠 compose 挂载源码生效)。
+
+**遗留提醒**:C 盘仅剩几百 MB,后续需清理大文件留余量;DeepSeek key 已暴露在对话中,建议作废重生成。唤醒词回复仍是镜像默认"小智台湾女孩"(helloHandle 里写死,非 LLM,可后续改);正式对话已全部是"安安"人设。
+
+---
+
+## 更新 2026-07-12h(后端部署卡在 C 盘空间不足 → 镜像损坏)
+
+**代码/配置全部就绪,但后端容器起不来,根因是宿主 C 盘空间严重不足导致 Docker 镜像损坏。**
+
+**已完成**:后端 3 文件情绪注入改动 + `data/.config.yaml`(DeepSeek+IP 192.168.43.5+安安人设+key)+ 模型 892MB + Docker 引擎修复(删过损坏 vhdx)。均校验通过。
+
+**排查链(重要,避免重走)**:
+1. 容器反复 `Restarting (exit 0)` 且 `docker logs` 空。
+2. 一度以为是 stdin(app.py `monitor_stdin/ainput`)→ 加了 `stdin_open/tty` + `command: tail -f /dev/null | python app.py`(compose 里已加,可保留)。但不是主因。
+3. 真因:**镜像 `ghcr.nju.edu.cn/xinnan-tech/...:server_latest` 大面积损坏**——`config/logger.py`、`urllib3/exceptions.py` 等**都是 0 字节空文件**。因为拉取/解压全程 C 盘满(只读),解压出残缺文件。
+4. 已在 compose `volumes` 加 `- ./:/opt/xiaozhi-esp32-server`(用仓库源码覆盖镜像代码,修好了我们的 .py;但**修不了镜像 site-packages 里损坏的依赖**如 urllib3)。
+
+**核心死结:C 盘物理只剩 ~1.3GB**(301G 用满)。WSL2 的 vhdx 在 C 盘,镜像下载 3.46GB+解压 10.6GB,一膨胀就撑爆 C 盘 → 只读 → 镜像损坏。**清缓存只能抠出零头,不够。**
+
+**必须先做(用户决策)**:真正腾出宿主 C 盘 **≥15-20GB**(卸大软件/挪大文件到别盘/扩容),或把 Docker 的磁盘映像(WSL vhdx)迁到别的盘(Docker Desktop → Settings → Resources → Disk image location 改到 D 盘等)。
+
+**空间够后**:
+```bash
+docker rmi ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest   # 删损坏镜像
+cd ".../xiaozhi-esp32-server/main/xiaozhi-server"
+docker compose up -d     # 干净重拉
+docker logs -f xiaozhi-esp32-server   # 应看到 loguru 正常输出 + 监听 8000/8003
+```
+> 注:compose 已挂 `./:/opt/...`,重拉后我们的情绪注入代码自动生效。data/.config.yaml 已配好。
+
+**再之后**:设备配网「高级选项」填 OTA=`http://192.168.43.5:8003/xiaozhi/ota/` → 验证。
+
+---
+
+## 更新 2026-07-12g(后端 DeepSeek + 情绪注入:代码完成,部署卡在 C 盘满)
+
+**目标**:自建 `xiaozhi-esp32-server`(本机 Docker)+ DeepSeek + 把设备上报的 emotion_state 注入 LLM 提示词 + "安安"助老人设。计划文件:`C:\Users\25453\.claude\plans\jaunty-skipping-crown.md`。
+
+**✅ 已完成(代码+配置,均过语法/YAML 校验)**:
+- 3 个后端文件改动(情绪注入,不改固件):
+  - `xiaozhi-esp32-server/main/xiaozhi-server/core/handle/textHandle.py`:`mcp` 分支拦截 `payload.type=="emotion_state"` → 存 `conn.current_emotion`。
+  - `.../core/connection.py`:加 `current_emotion` 字段、`EMOTION_LABEL_CN`/`EMOTION_GUIDANCE`(仅 happy/sad/neutral/anger 4类)、`_build_emotion_prompt()`(含 high_conflict 特殊关怀分支)、`chat()` 每轮生成 `emotion_context` 传参。
+  - `.../core/utils/dialogue.py`:`get_llm_dialogue_with_memory(..., emotion_info=None)`,把情绪提示**临时**拼进 system prompt 局部变量(不入历史)。
+- 部署配置 `.../data/.config.yaml`(gitignore 已忽略):`selected_module.LLM: DeepSeekLLM` + api_key(已填,demo 后建议作废重生成)+ `server.websocket: ws://192.168.43.5:8000/xiaozhi/v1/` + "安安"助老人设(7类已对齐4类)。
+- ASR 模型已下载:`.../models/SenseVoiceSmall/model.pt`(892MB,完整)。
+- Docker 已装(v29.6.1)、守护进程 OK。
+
+**⛔ 当前卡点:C 盘满(301G 用满,仅剩 ~986MB)**:
+- `docker compose up -d` 拉镜像 `ghcr.nju.edu.cn/xinnan-tech/xiaozhi-esp32-server:server_latest`(1GB+)时报 `read-only file system` / `input/output error` —— 空间不足。
+- 已清 `.espressif/dist`、`Temp`,只回收到 ~1GB,不够(拉+解压镜像需 2-3GB)。
+- **需用户手动清理 ≥3-5GB**(磁盘清理/卸软件/挪视频/清回收站)。大头不在可安全清理范围(AppData 仅 42G,其余在系统/其他)。
+
+**清空间后继续**:
+```bash
+cd "C:/Users/25453/Desktop/HRISenior/HRISenior/HRI-SeniorCare/xiaozhi-esp32-server/main/xiaozhi-server"
+docker compose up -d
+docker logs -f xiaozhi-esp32-server   # 确认监听 8000/8003、无报错
+```
+然后:设备配网页面「高级选项」填 OTA URL = `http://192.168.43.5:8003/xiaozhi/ota/`(或改固件 Kconfig 的 OTA_URL 重编),让设备连自建后端。
+
+**验证**:设备日志连到 `ws://192.168.43.5:8000/...`(不再 xiaozhi.me);说话时后端日志出现 `情感状态更新: sad (xx%)`;用悲伤语气 → DeepSeek 回复转向关切。
+
+---
+
+## 更新 2026-07-12f(✅ 屏幕正常显示 UI · 全部完成)
+
+**ST7789 屏已正常显示 UI。全链路彻底跑通。**
+
+- **屏没显示的根因**:`esp_lcd_panel_init` 后**缺 `esp_lcd_panel_disp_on_off(panel, true)`**(参照板 `bread-compact-wifi-lcd` 没调这个,但此屏必须显式开显示,否则背光亮但无画面)。已在 [compact_wifi_board.cc](../HRI-SeniorCare/Main/main/boards/bread-compact-wifi/compact_wifi_board.cc) 的 ST7789 init 里加上,保留。
+- 排查过程:BL 接 3.3V 屏变亮但无内容 → 排除背光极性 → 加开机刷全红诊断 → 加 `disp_on_off` 后显示正常 → 移除诊断代码。
+- **屏接线(8 脚,已验证可用)**:GND→GND, VCC→3.3V, SCL→GPIO12, SDA→GPIO11, RST→GPIO14, DC→GPIO13, CS→GPIO21, BL→GPIO2。
+- 背光正常(GPIO2 PWM,`DISPLAY_BACKLIGHT_OUTPUT_INVERT false`)。
+
+**至此:编译✅ 烧录✅ 启动✅ 显示✅ D-S情绪引擎✅ K210串口✅ SIEVOX管线✅。硬件端全部就绪。**
+剩余为联调:接 K210 发情绪 JSON 包看融合数字变化、后端 DeepSeek 对话+情绪注入。
+
+---
+
+## 更新 2026-07-12e(全流程打通,系统正常运行)
+
+**编译✅ 烧录✅ 启动✅ 显示✅ 情绪管线✅ —— 验收达成。**
+
+- **根因(启动卡死)**:屏是 **1.54" TFT / SPI / ST7789**,不是 I²C SSD1306。原板级代码用 I²C 驱动 → I²C 扫描 0 设备 → `esp_lcd_panel_init` 在 I²C 事务上无限等待(超时=-1)→ 卡死。是接口类型不匹配,不是坏件。
+- **修复(已改代码,保留全部 SIEVOX/K210/云台)**:
+  - [config.h](../HRI-SeniorCare/Main/main/boards/bread-compact-wifi/config.h):删 OLED I²C 定义,改成 ST7789 SPI 240×240。引脚(无冲突):MOSI=11, CLK=12, DC=13, RST=14, CS=21, BL=2。
+  - [compact_wifi_board.cc](../HRI-SeniorCare/Main/main/boards/bread-compact-wifi/compact_wifi_board.cc):`InitializeDisplayI2c/ScanI2cBus/InitializeSsd1306Display` → `InitializeSpi()` + `InitializeSt7789Display()`(参照 `bread-compact-wifi-lcd` 板);加 `GetBacklight()`(PwmBacklight)。K210/云台 InitializeTools 原样保留。
+- **接线(屏 ↔ ESP32-S3)**:SDA/DIN→GPIO11,SCL/SCK→GPIO12,DC→GPIO13,RST→GPIO14,CS→GPIO21,BL→GPIO2,VCC→3.3V,GND→GND。
+- **启动日志实证**(`.scratch/monitor_st.log`):
+  - `ST7789 display initialised`(426ms,不再卡)
+  - `UART_K210: UART initialised: TX=17, RX=18, Baud=115200` → `Receive task started`
+  - **`SIEVOX Emotion pipeline initialised: SER + D-S Fusion + Upstream`** ← 交接单验收标志
+  - WiFi 连上;`DS_FUSION: Fused: H=0.25 S=0.25 N=0.25 A=0.25 | K=0.000 -> happy` 每秒融合一次(均匀分布=正常,因 K210 未发数据、无语音输入,两模态都"完全不确定")。
+- 无关紧要:偶发 `E mbedtls_ssl_fetch_input error=29312` = TLS 握手网络抖动,自动重连,不影响。
+
+### 烧录经验(下次直接照做)
+- **波特率 115200**(460800/57600 都掉线);**USB 用数据线、直插后置口、别用 hub**;进下载模式=**按住 BOOT→点 RST→松 BOOT**。
+- 端口 "busy":有残留 monitor 进程占 COM5,查 `Get-CimInstance Win32_Process -Filter Name='python.exe'` 找带 `-p COM5` 的 PID 定向 kill。
+- 空间不足("No space left"):C 盘曾满,清了 `.espressif/dist`(工具安装包缓存,可再生)。
+
+### 后续(硬件/联调,非固件)
+1. 屏应已点亮显示表情/UI。若花屏/偏色:调 config.h 的 `DISPLAY_INVERT_COLOR`、`DISPLAY_RGB_ORDER`、`DISPLAY_MIRROR_*`、`DISPLAY_OFFSET_*`。
+2. 接 K210,按上一段的 JSON 契约(`emo[4]`+`face`+`seq`...)发情绪包,看 DS_FUSION 数字变化。
+3. 后端 DeepSeek 对话 + 情绪注入(`SendMcpMessage` 走现有通道)。
+
+---
+
+## 更新 2026-07-12d(烧录不稳定 · 疑供电/USB线)
+
+**当前卡点:重新烧录时"写大块 app 就掉线",非软件问题。**
+
+- 背景:为诊断启动卡死,在 `compact_wifi_board.cc` 加了 `ScanI2cBus()`(构造函数里 `InitializeDisplayI2c()` 之后、`InitializeSsd1306Display()` 之前调用),用 `i2c_master_probe` 扫 0x03–0x77 打印 ACK 的地址。**已编译成功,但没烧进去。**
+- 烧录现象(COM5,CH343,端口/驱动状态均 OK):
+  - 多次 `Connecting......` → `No serial data received`(没进下载模式 / 自动复位失灵)。
+  - 手动进下载模式后能连上、开始写,但 **115200 写到 40%、57600 写到 app 分区(0x20000)1% 就 `The chip stopped responding`**。bootloader(0x0,小块)每次都能写完校验通过。
+  - 降波特率无效 → 排除速率问题,**指向供电不足 / USB 数据线质量差 / 接触不良 / 外设(舵机)拉垮电源**。
+- 启动卡死本身(未解决,等能烧进扫描固件后继续):确定性卡在 `esp_lcd_panel_init()` 的 SSD1306 I²C 事务(v5.4 里 LCD i2c tx 超时 = -1 无限等待,收不到 ACK 就永久阻塞)。本板音频是 `NoAudioCodec`(I2S),**全板唯一 I²C 设备就是 OLED**。
+
+### 硬件排查清单(烧录掉线,按顺序试)
+1. **换一根 USB 数据线**(很多线只有充电线芯,没数据线芯);换机箱**后置**USB 口,别用 hub。
+2. **断开所有外设**(OLED、舵机/云台),只留 USB 供电烧录,排除供电被拉垮。
+3. 进下载模式时序:**按住 BOOT 不放 → 点按 RST(或拔插 USB)→ 再松 BOOT**。
+4. 能连上后先只烧 app 试稳定性:`idf.py -C <Main> -p COM5 -b 115200 app-flash`;或直接 `-b 460800` 反而有时更稳(取决于线)。
+5. 烧成功→自动复位跑扫描固件→`monitor` 看 `Scanning I2C bus...` / `I2C device found at 0xXX` / `I2C scan done: N device(s)`。N=0 说明 OLED 没在总线上(线/地址/端口问题);找到 0x3C 说明屏在、卡死另有原因。
+
+---
+
+## 更新 2026-07-12c(编译+烧录成功,固件启动但卡在板级初始化)
 
 **结论:编译✅ 烧录✅ 启动✅,但设备启动到 286ms 后卡住(疑似音频 codec I²C),非固件 bug。**
 
