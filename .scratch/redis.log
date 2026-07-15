@@ -1,0 +1,26 @@
+[13380] 14 Jul 19:16:34.160 # oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+[13380] 14 Jul 19:16:34.161 # Redis version=5.0.14.1, bits=64, commit=ec77f72d, modified=0, pid=13380, just started
+[13380] 14 Jul 19:16:34.161 # Warning: no config file specified, using the default config. In order to specify a config file use d:\redis\redis-server.exe /path/to/redis.conf
+[13380] 14 Jul 19:16:34.167 * Running mode=standalone, port=6379.
+[13380] 14 Jul 19:16:34.167 # Server initialized
+[13380] 14 Jul 19:16:34.167 * Ready to accept connections
+[13380] 14 Jul 20:16:35.008 * 1 changes in 3600 seconds. Saving...
+[13380] 14 Jul 20:16:35.228 * Background saving started by pid 21968
+[13380] 14 Jul 20:16:35.441 # fork operation complete
+[13380] 14 Jul 20:16:35.450 * Background saving terminated with success
+[13380] 14 Jul 21:16:36.050 * 1 changes in 3600 seconds. Saving...
+[13380] 14 Jul 21:16:36.288 * Background saving started by pid 22612
+[13380] 14 Jul 21:16:36.391 # fork operation complete
+[13380] 14 Jul 21:16:36.397 * Background saving terminated with success
+[13380] 14 Jul 22:17:22.629 * 1 changes in 3600 seconds. Saving...
+[13380] 14 Jul 22:17:22.820 * Background saving started by pid 55396
+[13380] 14 Jul 22:17:22.923 # fork operation complete
+[13380] 14 Jul 22:17:22.934 * Background saving terminated with success
+[13380] 14 Jul 23:17:57.915 * 1 changes in 3600 seconds. Saving...
+[13380] 14 Jul 23:17:58.238 * Background saving started by pid 56676
+[13380] 14 Jul 23:17:58.458 # fork operation complete
+[13380] 14 Jul 23:17:58.487 * Background saving terminated with success
+[13380] 15 Jul 04:20:25.629 * 1 changes in 3600 seconds. Saving...
+[13380] 15 Jul 04:20:26.406 * Background saving started by pid 52860
+[13380] 15 Jul 04:20:27.307 # fork operation complete
+[13380] 15 Jul 04:20:27.526 * Background saving terminated with success

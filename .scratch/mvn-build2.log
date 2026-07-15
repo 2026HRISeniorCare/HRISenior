@@ -1,0 +1,34 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ---------------------< xiaozhi:xiaozhi-esp32-api >----------------------
+[INFO] Building xiaozhi-esp32-api 0.0.1
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ xiaozhi-esp32-api ---
+[INFO] Copying 2 resources from src\main\resources to target\classes
+[INFO] Copying 64 resources from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.13.0:compile (default-compile) @ xiaozhi-esp32-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ xiaozhi-esp32-api ---
+[INFO] Copying 1 resource from src\test\resources to target\test-classes
+[INFO] 
+[INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ xiaozhi-esp32-api ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.2:test (default-test) @ xiaozhi-esp32-api ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ xiaozhi-esp32-api ---
+[INFO] 
+[INFO] --- spring-boot:3.4.3:repackage (repackage) @ xiaozhi-esp32-api ---
+[INFO] Replacing main artifact C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\xiaozhi-esp32-server\main\manager-api\target\xiaozhi-esp32-api.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to C:\Users\25453\Desktop\HRISenior\HRISenior\HRI-SeniorCare\xiaozhi-esp32-server\main\manager-api\target\xiaozhi-esp32-api.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  5.726 s
+[INFO] Finished at: 2026-07-14T19:31:26+08:00
+[INFO] ------------------------------------------------------------------------

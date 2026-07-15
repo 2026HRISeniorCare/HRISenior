@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys;txt=sys.stdin.read\\(\\);idx=txt.find\\('['\\);print\\(txt[idx:idx+400] if idx>=0 else 'NO LIST'\\)\")",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import sys,json;print\\(json.load\\(sys.stdin\\)['data']\\)\")",
+      "Bash(python app.py)",
+      "Bash(pip install *)",
+      "Bash(python -c \"from config.settings import load_config; c=load_config\\(\\); print\\('OK'\\)\")",
+      "Bash(python -c \"import opuslib; print\\('opus OK'\\)\")",
+      "Bash(where opus.dll)",
+      "Bash(curl -L -o /tmp/opus.zip \"https://github.com/xiph/opus/releases/download/v1.5.2/opus-1.5.2.zip\")",
+      "Read(//tmp/**)",
+      "Bash(cp \"/c/Users/25453/AppData/Roaming/kingsoft/wps/addons/pool/win-i386/kappesscommon_3.1.0.33453/opus.dll\" \"/c/Users/25453/AppData/Local/Programs/Python/Python313/\")",
+      "Bash(python -c \"import opuslib_next; print\\('opus OK'\\)\")",
+      "Bash(curl -L -o \"c:/Users/25453/AppData/Local/Programs/Python/Python313/opus.dll\" \"https://github.com/ShiftMediaProject/opus/releases/download/v1.5.2/libopus_x64.7z\")",
+      "Bash(rm -f \"/c/Users/25453/AppData/Local/Programs/Python/Python313/opus.dll\" && python -c \"import opuslib_next; print\\('opus OK'\\)\" 2>&1)",
+      "Bash(python -c \"import torch; print\\('torch', torch.__version__\\)\")",
+      "Bash(curl -s http://localhost:8003/xiaozhi/emotion/current)",
+      "Bash(curl -s http://localhost:8003/xiaozhi/emotion/meta)",
+      "Bash(curl -s http://localhost:8080/xiaozhi/emotion/current)",
+      "Bash(curl -s http://localhost:8080/xiaozhi/emotion/meta)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\25453\\AppData\\Local\\Programs\\Python\\Python313"
+    ]
+  }
+}
