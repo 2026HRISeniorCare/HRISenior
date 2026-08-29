@@ -3,9 +3,9 @@
 > **Resona** · Multimodal Elderly Care Robot
 > 北京化工大学 · 大学生创新创业训练计划项目(创新训练类)
 
-> 在 [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) 语音助手基座之上,扩展出「麦克风阵列声源定位云台」与「视觉 + 语音多模态情绪识别」两大能力,面向独居 / 空巢老人做情感陪护与**隐性抑郁**预警。
+> 在 [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) 语音助手基座之上，扩展出「视觉驱动双轴人脸跟随」与「视觉 + 语音多模态情绪识别」两大能力，面向独居 / 空巢老人提供情感陪护与情绪风险记录。
 >
-> 核心链路:**K210 视觉表情识别 → 串口上报 → ESP32-S3 Dempster-Shafer 证据融合 ← 板载语音情绪识别 → 经 MCP 通道上行 → 后端服务器(DeepSeek V3 / Qwen)生成共情回复 → melotts 语音合成**。
+> 核心链路：**MaixCAM Lite 视觉表情识别 → UART 上报 → ESP32-S3 Dempster-Shafer 证据融合 ← 板载语音情绪识别 → 云端大模型生成共情回复 → TTS 语音合成**。
 
 ---
 
@@ -16,7 +16,7 @@
 - [硬件与接线](#硬件与接线)
 - [参数配置](#参数配置)
 - [功能模块详解](#功能模块详解)
-  - [1. 视觉情绪识别(K210 / MaixCAM FER)](#1-视觉情绪识别k210--maixcam-fer)
+  - [1. 视觉情绪识别(MaixCAM Lite FER)](#1-视觉情绪识别maixcam-lite-fer)
   - [2. 语音情绪识别(SER)](#2-语音情绪识别ser)
   - [3. D-S 证据融合引擎](#3-d-s-证据融合引擎)
   - [4. 上行数据格式](#4-上行数据格式)
@@ -39,19 +39,19 @@
 
 本项目基于 [xiaozhi-esp32](https://github.com/78/xiaozhi-esp32)(v2.0.4)扩展而来。在保留其「离线唤醒 + 流式 ASR/LLM/TTS + MCP 设备控制」能力的基础上,新增了两大自研模块:
 
-**① 麦克风阵列声源定位与云台追踪**
+**① 视觉驱动的双轴云台追踪**
 
-- **声源定位**:MEMS7 麦克风环形阵列 + 轻量化 **TDOA / GCC-PHAT** 广义互相关,实时估计声源方位角。
-- **双轴云台**:两个 SG90 舵机做俯仰(Pitch)/横滚(Roll)控制,自动追踪声源,并为后续加装摄像头预留位置。
-- **串口通信**:ESP32-S3 与 K210 之间 UART 双向通信。
-- **状态显示**:K210 LCD 实时显示云台角度与追踪状态。
-- **MCP 语音控制**:通过语音指令控制舵机旋转与追踪开关。
+- **视觉定位**：MaixCAM Lite 使用 GC4653 摄像头检测人脸并输出边界框。
+- **双轴云台**：两个 SG90 舵机分别控制水平（Pan）与俯仰（Tilt），由 ESP32-S3 根据人脸中心偏差闭环跟随。
+- **串口通信**：MaixCAM Lite 与 ESP32-S3 通过 UART1 双向通信，实际波特率为 115200。
+- **状态显示**：ESP32-S3 驱动 ST7789 屏幕显示设备、语音、视觉和融合状态。
+- **MCP 语音控制**：通过语音指令控制舵机旋转与追踪开关。
 
 **② 多模态情绪识别(SIEVOX 核心)**
 
-将原有的"音频追踪云台"升级为**多模态情绪感知平台**:K210 摄像头做人脸表情识别(FER),ESP32 板载麦克风做语音情绪识别(SER),两路证据用 **Dempster-Shafer(D-S)证据理论**做决策级融合。系统再引入基于环境**信噪比(SNR)与光照(Lux)** 的**智能信任纠偏引擎**——谁的物理环境差就降低谁的权重,从而在复杂环境下抓住"面部微笑而声音颤抖"这类高**冲突**信号,识别老人的**掩饰型抑郁**并触发看护预警。
+将原有语音助手升级为**多模态情绪感知平台**：MaixCAM Lite 负责人脸检测与表情识别（FER），ESP32-S3 板载麦克风负责语音情绪识别（SER），两路证据通过 **Dempster-Shafer（D-S）证据理论**完成决策级融合。融合结果和模态冲突只上传到远端服务器记录，不在设备端播放警报，以免打断正常语音交互。
 
-> 使用的开发板:ESP32-S3 N16R8(对应 `board->bread-compact-wifi`)、Sipeed Maixbit K210。
+> 当前实机：ESP32-S3 N16R8（`board->bread-compact-wifi`）+ Sipeed MaixCAM Lite + 双 SG90 云台 + ST7789 屏幕。K210 仅保留为早期研究原型，不属于当前实机链路。
 
 ---
 
@@ -59,12 +59,12 @@
 
 ```
 ┌─────────────────────┐            ┌──────────────────────────────────────┐
-│   K210 / MaixCAM    │   UART     │         ESP32-S3 主控                 │
+│   MaixCAM Lite      │   UART     │         ESP32-S3 主控                 │
 │                     │  115200    │                                      │
 │  摄像头 → FER       │ ─────────→ │  uart_k210.cc (JSON 解析 + CRC)      │
-│  fer_engine.py      │  JSON      │           │                          │
-│  main.py            │  数据包    │           ▼                          │
-│  uart_comm.py       │           │  ┌─────────────────────┐             │
+│  YOLOv8 人脸检测    │  JSON      │           │                          │
+│  表情分类模型       │  数据包    │           ▼                          │
+│  main.py            │           │  ┌─────────────────────┐             │
 │                     │           │  │ DSFusionEngine       │             │
 │  情绪概率:          │ ←──────── │  │ (Dempster-Shafer)    │             │
 │  [H, S, N, A]       │  命令行    │  │                      │             │
@@ -96,47 +96,57 @@
 
 ## 硬件与接线
 
-### 引脚对接
+### 当前实机配置 / Current Hardware
 
-#### Sipeed Maixbit K210 ↔ MEMS7 麦克风阵列
+| 模块 / Module | 当前配置 / Current configuration |
+|---|---|
+| 主控 / Main controller | ESP32-S3 N16R8，ESP-IDF 工程，板型 `bread-compact-wifi` |
+| 视觉 / Vision | Sipeed MaixCAM Lite，GC4653，MaixPy |
+| 视觉模型 / Vision models | `yolov8n_face` 人脸检测 + `face_emotion_bf16` 表情分类 |
+| 语音 / Audio | ESP32-S3 板载麦克风，16 kHz PCM，VAD + SER |
+| 显示 / Display | ST7789 LCD，由 ESP32-S3 驱动 |
+| 执行器 / Actuators | 2 × SG90：水平 Pan + 俯仰 Tilt |
+| 云端 / Cloud | Xiaozhi 语音链路 + `https://sievox.cn/resona` 情绪数据与预警记录 |
 
-```python
-mic.init(
-    i2s_d0=22,
-    i2s_d1=23,
-    i2s_d2=21,
-    i2s_d3=20,
-    i2s_ws=19,
-    i2s_sclk=18,   # MIC_CK
-    sk9822_dat=10,
-    sk9822_clk=9   # LED_CK
-)
-```
+The deployed prototype uses an **ESP32-S3 N16R8** as the main controller and a **Sipeed MaixCAM Lite** as the vision node. The Lite runs face detection and facial-expression inference locally; the ESP32-S3 performs speech-emotion analysis, multimodal fusion, display rendering, cloud reporting, and two-axis servo control. Raw audio and camera frames remain on-device.
 
-#### K210 ↔ 两个 SG90 云台 PWM
+### UART 接线 / UART Wiring
 
-| K210 PWM | SG90  |
-| -------- | ----- |
-| IO7      | Pitch |
-| IO8      | Roll  |
+| MaixCAM Lite | 中间连接 / Connection | ESP32-S3 |
+|---|---|---|
+| A16 / UART0_TX | 串联 5 kΩ 电阻 / 5 kΩ series resistor | GPIO38 / UART1_RX |
+| A17 / UART0_RX | 直连 / Direct | GPIO39 / UART1_TX |
+| GND | 共地 / Common ground | GND |
 
-#### ESP32-S3 N16R8 ↔ Sipeed Maixbit K210 串口
+- 串口参数 / UART settings：**115200 baud, 8N1**。
+- 遥测格式 / Telemetry：换行分隔 JSON，包含序号、时间戳、人脸框、四类情绪概率、质量值和 CRC-8。
+- 情绪顺序 / Emotion order：`[happy, sad, neutral, anger]`。
+- MaixCAM Lite 的 UART0 同时可能输出系统日志；ESP32 接收器会重同步到以 `{` 开始、以换行结束的有效数据帧。
 
-| ESP32-S3<br>UART1 | K210<br>UARTHS  |
-| ----------------- | --------------- |
-| GPIO17 U1TXD      | IO4 ISP_RX (13) |
-| GPIO18 U1RXD      | IO5 ISP_TX (12) |
-| GND               | GND             |
+### 舵机与供电 / Servos and Power
 
-### 硬件清单(K210 音频追踪模块)
+| 功能 / Axis | ESP32-S3 PWM | 供电 / Power |
+|---|---|---|
+| 水平 Pan | GPIO41 | 外部 5 V |
+| 俯仰 Tilt | GPIO18 | 外部 5 V |
 
-- K210 开发板
-- 6 麦克风环形阵列 + 1 个垂直麦克风
-- 双轴舵机云台(俯仰 + 横滚)
-- LCD 显示屏(320×240)
-- LED 环用于方向指示
+两个 SG90 必须使用稳定的外部 5 V 供电，舵机电源地、ESP32-S3 地和 MaixCAM Lite 地必须共地。不要从 ESP32-S3 的 3.3 V 引脚给舵机供电，否则舵机启动电流可能触发 Brownout。
 
-**技术特点:** 6 麦环形阵列声源定位;硬件 FFT 加速下的 **GCC-PHAT** 广义互相关 + **TDOA** 到达时间差解算方位角;**300–3400Hz** 频带分割滤除低频底噪;**卡尔曼滤波**对定位输出做"预测-校正",超前补偿云台机械惯性、抑制多径回声;参数可配 PID 驱动双轴云台;LCD 可视化追踪状态。
+Both SG90 servos must use a stable external 5 V supply. The servo supply ground, ESP32-S3 ground, and MaixCAM Lite ground must be connected together. Do not power a servo from the ESP32-S3 3.3 V rail, because the startup current can reset the controller.
+
+### MaixCAM Lite 运行参数 / Runtime Settings
+
+- 摄像头输出 / Camera output：`640 × 480`，`buff_num=1`，`fps=60`。
+- 传感器模式 / Sensor mode：GC4653 `1280 × 720 @ 60 fps`。
+- 检测输入 / Detector input：`320 × 224 RGB`。
+- 视觉上报周期 / Vision telemetry interval：约 180 ms。
+- 当前脚本 / Current script：`MaixCam_Lite/main.py`。
+
+### 实机验证 / Hardware Validation
+
+2026-08-29 的连续联调记录确认：MaixCAM Lite、ESP32-S3、双轴舵机与远端服务器链路同时工作。15 秒串口窗口内统计为 `lines=593`、`parse_fail=0`、`crc_fail=0`、`drops=0`；服务器返回设备 `online=1`，融合结果能够持续更新。该记录证明通信链路已跑通，不代表情绪模型在目标人群上的最终准确率。
+
+The 2026-08-29 integration run verified the complete MaixCAM Lite → ESP32-S3 → dual-servo → cloud path. During a 15-second serial window, the receiver reported `lines=593`, `parse_fail=0`, `crc_fail=0`, and `drops=0`; the server reported the device as `online=1`. This validates system connectivity, not final emotion-recognition accuracy for the target population.
 
 ---
 
@@ -191,13 +201,15 @@ mic.init(
 
 ## 功能模块详解
 
-### 1. 视觉情绪识别(K210 / MaixCAM FER)
+### 1. 视觉情绪识别（MaixCAM Lite FER）
 
-**模型选型:** K210 的 KPU 最多并行两个 INT8 模型。采用两级流水线——先用 YOLO 人脸检测器(约 200 KB)定位人脸框,再用 MobileNetV2-0.35 分类器(约 400 KB)将裁剪后的人脸映射到 4 类情绪。
+**模型选型：** MaixCAM Lite 先用 `yolov8n_face` 检测人脸，再将对齐后的人脸灰度图送入 `face_emotion_bf16` 分类器。原始七类输出会映射为 ESP32 融合引擎使用的四类 `[happy, sad, neutral, anger]`。
 
-**FER 节奏 vs 云台控制:** 若每帧都跑 KPU 推理,会抢占舵机控制回路的 CPU 时间。`fer_every_n`(默认 3)将 FER 节流到每 3 帧一次,使情绪更新维持约 6–8 FPS,同时云台追踪保持约 20 FPS 的流畅度。
+**低内存运行：** GC4653 使用 `640 × 480`、单缓冲和 60 FPS 配置，推理前显式缩放到 `320 × 224`。摄像头在神经网络模型之前初始化，避免 Lite 固件出现媒体缓冲不足或首帧超时。
 
-**UART 协议设计:** 每一行 K210→ESP32 数据都是一个自包含的 JSON 对象,带**单调递增序号**和 **CRC-8**。这样一来,即使 ESP32 丢包(UART 缓冲溢出或忙于处理),也能凭序号缺口直接发现丢包,无需 ACK/NACK 往返;CRC 则防御云台电机电源轨 EMI 引起的比特翻转。
+**UART 协议设计：** 每一行 MaixCAM Lite→ESP32 数据都是带单调递增序号和 CRC-8 的独立 JSON 对象。ESP32 可通过序号检测丢包，并利用 CRC 防御舵机电源干扰引起的比特翻转。
+
+The Lite vision pipeline combines YOLOv8 face detection with an on-device facial-expression classifier. Frames are emitted as newline-delimited, CRC-protected JSON packets so that the ESP32-S3 can recover from mixed UART boot logs and detect corruption without an ACK/NACK round trip.
 
 ### 2. 语音情绪识别(SER)
 
@@ -217,7 +229,7 @@ mic.init(
 
 贝叶斯融合需要已知先验分布,并假设各源相互独立。D-S 理论在本场景有两大关键优势:
 
-1. **显式建模不确定性。** 当 K210 未检测到人脸时,可直接赋 m(Θ) = 0.95(95% 不确定),而不是伪造一个均匀分布。融合会自动让语音模态占主导。
+1. **显式建模不确定性。** 当 MaixCAM Lite 未检测到人脸时,可直接赋 m(Θ) = 0.95(95% 不确定),而不是伪造一个均匀分布。融合会自动让语音模态占主导。
 2. **量化冲突。** 冲突因子 K 直接度量面部与声音的分歧程度——这正是"掩饰型抑郁"检测所需的信号。
 
 #### Dempster 合成规则
@@ -291,15 +303,15 @@ ESP32 通过 `SendMcpMessage()` 将融合结果打包成如下 JSON,经现有 We
 
 `sources` 子对象保留两路原始输入以提供可解释性——后端服务器可据此记录日志,供看护复核与模型调参。
 
-### 5. 麦克风阵列声源定位(TDOA + GCC-PHAT + 卡尔曼)
+### 5. 早期研究原型：麦克风阵列声源定位
 
-在 SRAM 极度受限的 K210 上,通过深度调度硬件 **FFT 加速器**,把 **GCC-PHAT**(广义互相关)算法轻量化落地,配合 **TDOA**(到达时间差)解算声源方位角:
+早期版本曾在 K210 上研究 MEMS7 麦克风阵列、GCC-PHAT、TDOA 和卡尔曼滤波声源追踪。该方案保留为研究资料，但**不属于当前 MaixCAM Lite + ESP32-S3 实机接线**。当前双轴云台由 MaixCAM Lite 输出的人脸边界框驱动。
 
 - **频带分割优化**:数字滤波屏蔽低频底噪,仅锁定 **300–3400Hz** 核心人声频段运算,剔除冗余计算、压低延迟。
 - **机电耦合校正**:引入**卡尔曼滤波**对 TDOA 输出做"预测-校正",超前补偿随动云台的物理惯性,解决传统声源追踪"寻而不稳"的抖动问题。
 - **实测(阶段性成果):** 在 **5dB 低信噪比**极限抗噪环境下,方位角定位误差 **≤ 8°**,极限定位延迟低至 **220ms**,有效抑制室内多径回声。
 
-> 声源定位与云台追踪逻辑运行在 K210(MaixPy)端;当前仓库 checkout 中未包含该端源码(部署在设备 SD 卡上)。
+> 以上声源定位指标对应早期原型；当前版本的实机状态以“硬件与接线 / Current Hardware”一节为准。
 
 ### 6. 端云协同与隐私
 
@@ -314,72 +326,23 @@ ESP32 通过 `SendMcpMessage()` 将融合结果打包成如下 JSON,经现有 We
 
 ### UART 通信
 
-**K210 端(`uart_comm.py`)**
+**MaixCAM Lite 端（`MaixCam_Lite/main.py`）**
 
 ```python
-class UartComm:
-    def __init__(self):
-        # 初始化 UARTHS, 波特率 115200
-        # K210: IO4=RX(接ESP32的TX/GPIO17), IO5=TX(接ESP32的RX/GPIO18)
+UART_DEVICE = "/dev/ttyS0"
+UART_BAUD = 115200
 
-        # 先释放原来的映射，避免和 REPL 冲突
-        for func in (fm.fpioa.UARTHS_RX, fm.fpioa.UARTHS_TX):
-            try:
-                fm.unregister(func)
-            except ValueError:
-                pass
+pinmap.set_pin_function("A16", "UART0_TX")
+pinmap.set_pin_function("A17", "UART0_RX")
+ser = uart.UART(UART_DEVICE, UART_BAUD)
 
-        try:
-            fm.register(board_info.PIN4, fm.fpioa.UARTHS_RX, force=True)  # IO4 ← ESP32 TX
-            fm.register(board_info.PIN5, fm.fpioa.UARTHS_TX, force=True)  # IO5 → ESP32 RX
-            print("(K210) UART pins registered: RX=IO4, TX=IO5")
-        except:
-            print("(K210) Failed to register UART1 pins")
-
-        self.uart = UART(UART.UARTHS, 115200, read_buf_len=4096)
-        print("(K210) UART initialized: 115200 baud")
-
-        # 清空缓冲区
-        if self.uart.any():
-            self.uart.read()
-            print("(K210) Cleared UART buffer")
-
-    def send(self, data):
-        """发送数据到 ESP32"""
-        if isinstance(data, str):
-            data = data.encode('utf-8')
-        self.uart.write(data)
-        print("Sent to ESP32: {}".format(data))
-
-    def receive_line(self, timeout_ms=1000):
-        """接收一行数据(以 \n 结尾)"""
-        start = time.ticks_ms()
-        buffer = b''
-        while time.ticks_diff(time.ticks_ms(), start) < timeout_ms:
-            if self.uart.any():
-                char = self.uart.read(1)
-                if char:
-                    buffer += char
-                    if char == b'\n':
-                        try:
-                            return buffer.decode('utf-8').strip()
-                        except:
-                            return buffer
-            time.sleep_ms(10)
-        if buffer:
-            return buffer.decode('utf-8').strip()
-        return None
-
-    def start_receive_task(self, callback):
-        """持续接收数据并调用回调处理"""
-        while True:
-            data = self.receive_line()
-            if data:
-                callback(data)
-            time.sleep_ms(10)
+# Every packet begins with "{" and ends with "\n".
+ser.write(encode_packet(packet).encode("ascii"))
 ```
 
-**ESP32-S3 端(`uart_k210.cc`)**
+`encode_packet()` 以不含 `crc` 字段的 JSON 主体计算 CRC-8（多项式 `0x07`），随后追加两位十六进制校验值。ESP32 会忽略 UART0 中夹杂的启动日志并自动重新同步到下一个合法 JSON 帧。
+
+**ESP32-S3 端（`uart_k210.cc`，保留历史模块名）**
 
 ```cpp
 #include "uart_k210.h"
@@ -387,7 +350,7 @@ class UartComm:
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#define TAG "UART_K210(ESP32)"
+#define TAG "UART_VISION"
 
 void UartK210::Init() {
     uart_config_t uart_config = {
@@ -483,13 +446,11 @@ void RegisterMcpTools() {
 
 ## 源码文件清单
 
-情绪流水线分为**研究原型**(位于 `Smart-Aging-Acoustic-Perception-and-Optimized-Localization-System/`,扁平存放,含仿真/可视化脚本)与**生产代码**(已移植进 `HRI-SeniorCare/Main/main/`)两份。
+情绪流水线分为**研究原型**（位于 `Smart-Aging-Acoustic-Perception-and-Optimized-Localization-System/`，含仿真与可视化脚本）和**当前部署代码**。ESP32-S3 固件位于 `HRI-SeniorCare/Main/main/`，MaixCAM Lite 程序位于仓库根目录的 `MaixCam_Lite/`。
 
-| 环节 | 研究原型(Smart-Aging/) | 生产代码(HRI-SeniorCare/Main/main/) | 语言 | 说明 |
+| 环节 | 研究原型（Smart-Aging/） | 当前部署代码 | 语言 | 说明 |
 |------|------------------------|--------------------------------------|------|------|
-| 视觉 | `fer_engine.py` | *(部署在 K210 上)* | Python (MaixPy) | 人脸检测 + 表情分类 |
-| 视觉 | `uart_comm.py` | — | Python (MaixPy) | 带 CRC-8 + 序号的 JSON 遥测 |
-| 视觉 | `main.py` | — | Python (MaixPy) | 集成 FER 的主循环 |
+| 视觉 | — | `MaixCam_Lite/main.py` | Python (MaixPy) | Lite 摄像头、人脸检测、表情分类与 UART 遥测 |
 | 语音 | `speech_emotion.{h,cc}` | `emotion/speech_emotion.{h,cc}` | C++ (ESP-IDF) | SER 特征提取 + 启发式映射 |
 | 融合 | `ds_fusion_engine.{h,cc}` | `emotion/ds_fusion_engine.{h,cc}` | C++ (ESP-IDF) | Dempster 规则 + 冲突处理 |
 | 融合 | `uart_k210.{h,cc}` | `uart_k210/uart_k210.{h,cc}` | C++ (ESP-IDF) | JSON 解析 + 丢包检测 |
@@ -504,7 +465,7 @@ void RegisterMcpTools() {
 
 将情绪流水线接入 ESP32 主固件的步骤:
 
-1. **K210 端:** 将 `fer_engine.py`、`uart_comm.py`、`main.py` 拷入 SD 卡,并把 `face_detect.kmodel`、`fer_mobilenet.kmodel` 放到 `/sd/models/`。
+1. **MaixCAM Lite 端：** 将 `MaixCam_Lite/main.py` 上传为 `/maixapp/main.py`，并确认 `/root/models/yolov8n_face.mud` 与 `/root/models/face_emotion.mud` 可用。
 2. **ESP32 CMakeLists.txt:** 把 `speech_emotion.cc`、`ds_fusion_engine.cc` 及更新后的 `uart_k210.cc` 加入组件的 `SRCS` 列表。
 3. **application.h:** 添加成员变量(SER、融合引擎、融合定时器)。
 4. **application.cc `Start()`:** 注册视觉回调并初始化各模块。
@@ -541,8 +502,10 @@ void RegisterMcpTools() {
 
 | 方向 | 指标 / 成果 | 状态 |
 |------|-------------|------|
-| 语音交互闭环 | ESP32-S3 + K210 本地 VAD + 云端 DeepSeek V3 + melotts,低延迟对话跑通 | ✅ 已实现 |
-| 声源定位感知基座 | 5dB 低信噪比下方位角误差 ≤ 8°、极限定位延迟 220ms、抑制多径回声 | ✅ 已实现 |
+| 语音交互闭环 | ESP32-S3 本地 VAD + 云端 ASR/LLM/TTS，低延迟对话跑通 | ✅ 已实现 |
+| 视觉与云台闭环 | MaixCAM Lite 人脸框经 UART 驱动 ESP32-S3 双 SG90 跟随 | ✅ 已实机验证 |
+| 端云链路 | 情绪融合结果上传 `sievox.cn/resona`，服务器显示设备在线 | ✅ 已实机验证 |
+| 声源定位研究原型 | K210 + MEMS7 的 TDOA/GCC-PHAT 方案，不属于当前实机接线 | 🧪 历史原型 |
 | D-S 多模态融合(仿真) | 5000 组蒙特卡洛压测,引入动态信任惩罚因子后较单模态(约 72%)提升 **+13.5%** | 🧪 仿真验证 |
 | D-S 引擎实机部署 | 静态可靠度版本已跑通;SNR/Lux 动态纠偏待全量移植 ESP32-S3 | 🚧 迁移中 |
 
@@ -590,7 +553,7 @@ void RegisterMcpTools() {
 - **TFLite Micro SER 模型**:用 RAVDESS / IEMOCAP 训练 3 层 MLP,量化 INT8 经 SPIFFS 部署,替换启发式映射。
 - **时空对齐 + 时间平滑**:以 ESP32 为主时钟封装毫秒级时间戳、构建滑动时间窗对齐视听数据;融合结果做指数移动平均消抖。
 - **扩展情绪类别**:将 Θ 扩展到含 {恐惧、惊讶、厌恶}——增大 BPA 数组(改 `kNumEmotions` 并重训模型)。
-- **升级 MaixCAM**:其 RISC-V 核可运行更大的 FER 模型(如 MobileFaceNet)以提升精度。
+- **视觉模型优化**：在 MaixCAM Lite 内存预算内评估更稳健的人脸检测、表情分类和时间平滑方案。
 
 ---
 

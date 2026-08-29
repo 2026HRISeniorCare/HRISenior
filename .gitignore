@@ -1,0 +1,11 @@
+# Local Codex/Claude state and temporary artifacts
+.claude/settings.local.json
+.scratch/
+
+# Python runtime artifacts
+__pycache__/
+*.py[cod]
+
+# Local runtime data; do not publish biometric or database contents
+dump.rdb
+faces.bin
