@@ -12,6 +12,7 @@
 ## 目录
 
 - [项目概述](#项目概述)
+- [论文发表信息](#论文发表信息--publication)
 - [系统架构](#系统架构)
 - [硬件与接线](#硬件与接线)
 - [参数配置](#参数配置)
@@ -20,7 +21,7 @@
   - [2. 语音情绪识别(SER)](#2-语音情绪识别ser)
   - [3. D-S 证据融合引擎](#3-d-s-证据融合引擎)
   - [4. 上行数据格式](#4-上行数据格式)
-  - [5. 麦克风阵列声源定位](#5-麦克风阵列声源定位tdoa--gcc-phat--卡尔曼)
+  - [5. 早期研究原型：麦克风阵列声源定位](#5-早期研究原型麦克风阵列声源定位)
   - [6. 端云协同与隐私](#6-端云协同与隐私)
 - [串口通信与 MCP](#串口通信与-mcp)
 - [源码文件清单](#源码文件清单)
@@ -52,6 +53,24 @@
 将原有语音助手升级为**多模态情绪感知平台**：MaixCAM Lite 负责人脸检测与表情识别（FER），ESP32-S3 板载麦克风负责语音情绪识别（SER），两路证据通过 **Dempster-Shafer（D-S）证据理论**完成决策级融合。融合结果和模态冲突只上传到远端服务器记录，不在设备端播放警报，以免打断正常语音交互。
 
 > 当前实机：ESP32-S3 N16R8（`board->bread-compact-wifi`）+ Sipeed MaixCAM Lite + 双 SG90 云台 + ST7789 屏幕。K210 仅保留为早期研究原型，不属于当前实机链路。
+
+---
+
+## 论文发表信息 / Publication
+
+本项目论文已被 **2026年第七届智能计算与人机交互国际会议（ICHCI 2026）**录用，并获邀在会议期间进行口头报告。会议计划于 **2026年9月18日至20日**在中国南昌举行。
+
+| 项目 / Item | 信息 / Details |
+|---|---|
+| 论文题目 / Title | *Resona: When Smile Meets Trembling Voice — Edge Multimodal Conflict Detection for Eldercare* |
+| 稿件编号 / Manuscript No. | `26080617134113593` |
+| 作者 / Authors | Qihan Zhao, Yanfeng Qin, Liantong Feng, Guangtian Qin, Tianyu Gao, Guohua Chen |
+| 录用日期 / Acceptance date | 2026-08-15 |
+| 报告形式 / Presentation | Oral presentation / 口头报告 |
+| 会议论文集 / Proceedings | IEEE，ISBN `979-8-3195-3266-4` |
+| 检索状态 / Indexing status | 会议报告并正式出版后，论文集将提交 EI Compendex 和 Scopus 检索；当前不表述为已检索。 |
+
+The paper has been **accepted by ICHCI 2026** and invited for an oral presentation. According to the acceptance letter, publication in the IEEE conference proceedings and submission to EI Compendex and Scopus occur after the required conference presentation; acceptance does not by itself mean that indexing has already been completed. The acceptance record is preserved in [`docs/publication/ICHCI_2026_ACCEPTANCE.md`](docs/publication/ICHCI_2026_ACCEPTANCE.md).
 
 ---
 
