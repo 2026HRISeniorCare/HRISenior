@@ -1,4 +1,6 @@
 # 基于人机交互与模态识别的语音情感交流式助老机器人
+`English version: [README_en.md](README_en.md)`
+
 
 > **Resona** · Multimodal Elderly Care Robot
 > 北京化工大学 · 大学生创新创业训练计划项目(创新训练类)
