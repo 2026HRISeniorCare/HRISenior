@@ -58,7 +58,7 @@
 
 ## 论文发表信息 / Publication
 
-本项目论文已被 **2026年第七届智能计算与人机交互国际会议（ICHCI 2026）**录用，并获邀在会议期间进行口头报告。会议计划于 **2026年9月18日至20日**在中国南昌举行。
+本项目核心技术论文已被 **2026年第七届智能计算与人机交互国际会议（ICHCI 2026）**录用。
 
 | 项目 / Item | 信息 / Details |
 |---|---|
@@ -70,7 +70,7 @@
 | 会议论文集 / Proceedings | IEEE，ISBN `979-8-3195-3266-4` |
 | 检索状态 / Indexing status | 会议报告并正式出版后，论文集将提交 EI Compendex 和 Scopus 检索；当前不表述为已检索。 |
 
-The paper has been **accepted by ICHCI 2026** and invited for an oral presentation. According to the acceptance letter, publication in the IEEE conference proceedings and submission to EI Compendex and Scopus occur after the required conference presentation; acceptance does not by itself mean that indexing has already been completed. The acceptance record is preserved in [`docs/publication/ICHCI_2026_ACCEPTANCE.md`](docs/publication/ICHCI_2026_ACCEPTANCE.md).
+
 
 ---
 
@@ -78,7 +78,7 @@ The paper has been **accepted by ICHCI 2026** and invited for an oral presentati
 
 ```
 ┌─────────────────────┐            ┌──────────────────────────────────────┐
-│   MaixCAM Lite      │   UART     │         ESP32-S3 主控                 │
+│   MaixCAM Lite      │   UART     │         ESP32-S3 主控                │
 │                     │  115200    │                                      │
 │  摄像头 → FER       │ ─────────→ │  uart_k210.cc (JSON 解析 + CRC)      │
 │  YOLOv8 人脸检测    │  JSON      │           │                          │
@@ -126,8 +126,6 @@ The paper has been **accepted by ICHCI 2026** and invited for an oral presentati
 | 显示 / Display | ST7789 LCD，由 ESP32-S3 驱动 |
 | 执行器 / Actuators | 2 × SG90：水平 Pan + 俯仰 Tilt |
 | 云端 / Cloud | Xiaozhi 语音链路 + `https://sievox.cn/resona` 情绪数据与预警记录 |
-
-The deployed prototype uses an **ESP32-S3 N16R8** as the main controller and a **Sipeed MaixCAM Lite** as the vision node. The Lite runs face detection and facial-expression inference locally; the ESP32-S3 performs speech-emotion analysis, multimodal fusion, display rendering, cloud reporting, and two-axis servo control. Raw audio and camera frames remain on-device.
 
 ### UART 接线 / UART Wiring
 
