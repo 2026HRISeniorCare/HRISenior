@@ -149,7 +149,6 @@
 
 两个 SG90 必须使用稳定的外部 5 V 供电，舵机电源地、ESP32-S3 地和 MaixCAM Lite 地必须共地。不要从 ESP32-S3 的 3.3 V 引脚给舵机供电，否则舵机启动电流可能触发 Brownout。
 
-Both SG90 servos must use a stable external 5 V supply. The servo supply ground, ESP32-S3 ground, and MaixCAM Lite ground must be connected together. Do not power a servo from the ESP32-S3 3.3 V rail, because the startup current can reset the controller.
 
 ### MaixCAM Lite 运行参数 / Runtime Settings
 
@@ -163,7 +162,6 @@ Both SG90 servos must use a stable external 5 V supply. The servo supply ground,
 
 2026-08-29 的连续联调记录确认：MaixCAM Lite、ESP32-S3、双轴舵机与远端服务器链路同时工作。15 秒串口窗口内统计为 `lines=593`、`parse_fail=0`、`crc_fail=0`、`drops=0`；服务器返回设备 `online=1`，融合结果能够持续更新。该记录证明通信链路已跑通，不代表情绪模型在目标人群上的最终准确率。
 
-The 2026-08-29 integration run verified the complete MaixCAM Lite → ESP32-S3 → dual-servo → cloud path. During a 15-second serial window, the receiver reported `lines=593`, `parse_fail=0`, `crc_fail=0`, and `drops=0`; the server reported the device as `online=1`. This validates system connectivity, not final emotion-recognition accuracy for the target population.
 
 ---
 
@@ -226,7 +224,6 @@ The 2026-08-29 integration run verified the complete MaixCAM Lite → ESP32-S3 �
 
 **UART 协议设计：** 每一行 MaixCAM Lite→ESP32 数据都是带单调递增序号和 CRC-8 的独立 JSON 对象。ESP32 可通过序号检测丢包，并利用 CRC 防御舵机电源干扰引起的比特翻转。
 
-The Lite vision pipeline combines YOLOv8 face detection with an on-device facial-expression classifier. Frames are emitted as newline-delimited, CRC-protected JSON packets so that the ESP32-S3 can recover from mixed UART boot logs and detect corruption without an ACK/NACK round trip.
 
 ### 2. 语音情绪识别(SER)
 
