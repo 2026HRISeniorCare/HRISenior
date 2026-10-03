@@ -1,0 +1,9 @@
+id: face_emotion_recognizer
+name: Face Emotion Recognizer
+version: 1.0.3
+author: Sipeed Ltd
+icon: ''
+entry: main.py
+desc: Recognize face identity and four-class facial emotion, then send JSON packets to ESP32-S3 over UART.
+files:
+  - main.py
