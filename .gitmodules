@@ -1,0 +1,3 @@
+[submodule "HRI-SeniorCare"]
+	path = HRI-SeniorCare
+	url = https://github.com/HRI4Seniors-Team/HRI-SeniorCare.git
