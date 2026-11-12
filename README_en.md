@@ -93,7 +93,9 @@ Upload `MaixCam_Lite/main.py` as `/maixapp/main.py`. The following models must b
 
 Run the script in the foreground during first-time validation. Confirm that UART line counts increase and that parse and CRC error counters remain zero before enabling automatic startup.
 
-## Verification status before project completion
+## Project completion and outcomes
+
+In 2026, the project passed the National Undergraduate Innovation Training Program completion review with an **Excellent** rating.
 
 | Area | Status |
 |---|---|
@@ -102,8 +104,10 @@ Run the script in the foreground during first-time validation. Confirm that UART
 | Two-axis face tracking | Completed with two SG90 servos |
 | Cloud emotion reporting | Completed; fused state and conflict records are visible remotely |
 | Dataset validation | Completed with actor-grouped RAVDESS five-fold evaluation, fusion comparisons, and confidence intervals |
-| Conference paper | Accepted by ICHCI 2026; acceptance record is stored in `docs/publication/ICHCI_2026_ACCEPTANCE.md` |
-| Product finishing | Prototype works; enclosure, PCB, long-duration regression, and final project materials remain to be closed before submission |
+| Conference paper | Published by IEEE in ICHCI 2026, pp. 213–217, and indexed by EI Compendex |
+| Software copyright | *Human–Computer Interaction and Modality Recognition–Based Emotion Recognition System*, registration no. `26SR1052672` |
+| User study | Completed with 25 participants; usability and robot-perception scores were 4.43 and 4.38 out of 5 |
+| Project completion | National Undergraduate Innovation Training Program; final rating: **Excellent** |
 
 The dataset results, simulation results, communication tests, and end-to-end hardware tests are reported separately. Connectivity validation should not be interpreted as clinical emotion-recognition validation.
 
@@ -131,13 +135,9 @@ GET  https://sievox.cn/resona/emotion/meta
 
 The upload contains the device identifier, dominant emotion, score, belief vector, conflict value, high-conflict flag, and source summaries. Conflict events are recorded in the remote warning log and do not trigger a local audible alarm, so they cannot interrupt speech output.
 
-## Finalization plan
+## Future work
 
-1. Freeze the tested firmware, MaixCAM Lite script, and server interface versions.
-2. Run a long-duration regression test and record resets, UART packet loss, cloud upload status, and servo behavior.
-3. Complete wiring and enclosure documentation, safety notes, user instructions, and project photographs.
-4. Archive experiment outputs, hardware logs, paper materials, acceptance documents, and the final project report.
-5. Keep future work—dynamic SNR/Lux reliability correction, an embedded neural SER model, and larger-scale elderly-user studies—clearly separated from the completed prototype scope.
+The project has completed its national-level review. Future research will examine dynamic SNR/Lux reliability correction, an embedded neural SER model, broader emotion categories, and larger-scale studies with older adults. These directions are not presented as completed capabilities. Resona remains an assistive interaction prototype and is not a medical diagnostic system.
 
 ## Repository structure
 
@@ -163,7 +163,7 @@ The historical K210 and MEMS-array experiments remain available under the resear
 
 ## Publication
 
-The paper *Resona: When Smile Meets Trembling Voice — Edge Multimodal Conflict Detection for Eldercare* was accepted by the 2026 7th International Conference on Intelligent Computing and Human-Computer Interaction (ICHCI 2026). The manuscript number is `26080617134113593`, and the authors are Qihan Zhao, Yanfeng Qin, Liantong Feng, Guangtian Qin, Tianyu Gao, and Guohua Chen.
+The paper *Resona: When Smile Meets Trembling Voice — Edge Multimodal Conflict Detection for Eldercare* was published in the proceedings of the 2026 7th International Conference on Intelligent Computing and Human-Computer Interaction (ICHCI 2026), pages 213–217, and is indexed by EI Compendex. It is available as [IEEE Xplore Document `11739862`](https://ieeexplore.ieee.org/document/11739862), DOI [`10.1109/ICHCI71425.2026.11739862`](https://doi.org/10.1109/ICHCI71425.2026.11739862). The authors are Qihan Zhao, Yanfeng Qin, Liantong Feng, Guangtian Qin, Tianyu Gao, and Guohua Chen.
 
 ## License and acknowledgements
 

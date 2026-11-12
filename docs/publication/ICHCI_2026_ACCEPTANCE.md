@@ -1,4 +1,4 @@
-# ICHCI 2026 Acceptance Record / ICHCI 2026 录用记录
+# ICHCI 2026 Publication and Indexing Record / ICHCI 2026 发表与检索记录
 
 ## Publication details / 论文信息
 
@@ -12,7 +12,11 @@
 | Acceptance date | August 15, 2026 |
 | Presentation | Invited oral presentation |
 | Proceedings | IEEE; ISBN `979-8-3195-3266-4` |
-| Indexing statement | The proceedings are to be submitted to EI Compendex and Scopus after publication. This is not a claim of completed indexing. |
+| Pages | 213–217 |
+| IEEE Xplore document ID | [`11739862`](https://ieeexplore.ieee.org/document/11739862) |
+| DOI | [`10.1109/ICHCI71425.2026.11739862`](https://doi.org/10.1109/ICHCI71425.2026.11739862) |
+| Date added to IEEE Xplore | October 30, 2026 |
+| Indexing status | Indexed by EI Compendex |
 
 ## Acceptance letter text
 
@@ -36,4 +40,4 @@
 
 ## 中文说明
 
-该录用信证明论文已通过同行评审并被 ICHCI 2026 录用，同时获邀进行口头报告。按照录用信的条件，论文需要完成会议报告后才进入 IEEE 会议论文集出版流程，随后由会议方提交 EI Compendex 和 Scopus 检索。因此，当前准确状态为“已录用、待会议报告与正式出版”，不能表述为“已被 EI 或 Scopus 检索”。
+该录用信证明论文已通过同行评审并被 ICHCI 2026 录用，同时获邀进行口头报告。论文随后正式发表于 IEEE 会议论文集，页码为 213–217，于 2026 年 10 月 30 日上线 IEEE Xplore，IEEE 文献号为 `11739862`，DOI 为 `10.1109/ICHCI71425.2026.11739862`，现已被 EI Compendex 检索。
