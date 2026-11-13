@@ -1,0 +1,16 @@
+Group,Ref,Function,ESP32_GPIO,External_Pin_or_Net,Required_Protection,PCB_Placement_Note
+Vision,J1,MaixCam UART,38/39,A16_TX/A17_RX/GND,4.7k-10k series on Maix TX; optional 0R on ESP TX,Place near board edge and away from audio input
+Servo,J2,Pan servo PWM,41,GND/5V_SERVO/SIG,External 5V and common GND,Place beside J3 with identical pin order
+Servo,J3,Tilt servo PWM,18,GND/5V_SERVO/SIG,External 5V and common GND,Place beside J2 with identical pin order
+Power,J4,Servo power input,,5V_SERVO/GND,Reverse-polarity protection recommended,Place at edge with clear polarity silk
+Power,C1,Servo bulk capacitor,,5V_SERVO/GND,470uF-1000uF,Place close to J2/J3 and J4
+Power,C2,Servo decoupling capacitor,,5V_SERVO/GND,0.1uF ceramic,Place close to J2/J3
+Display,J5,ST7789,2/11/12/13/14/21,BL/MOSI/CLK/DC/RST/CS,Verify module voltage and pin order,Keep SPI traces short
+Audio,J6,I2S microphone,4/5/6,WS/SCK/DIN/VCC/GND,Local decoupling,Keep away from servo power and PWM traces
+Audio,J7,I2S speaker amplifier,7/15/16,DOUT/BCLK/LRCK/VCC/GND,Local bulk and ceramic decoupling,Place near speaker output edge
+Input,SW1,Volume up,40,VOL+,Pull-up or pull-down per firmware,Keep accessible
+Input,SW2,Volume down,17,VOL-,Pull-up or pull-down per firmware,Keep accessible; do not use GPIO39
+Output,J8,Lamp control,10,LAMP_CTRL,Use transistor or MOSFET for external load,Place driver close to output connector
+Input,J9,Touch or function input,47,TOUCH,ESD protection if externally exposed,Keep trace short
+System,TP1,Boot test point,0,BOOT,None; preserve boot behavior,Do not load during reset
+System,D1,Builtin LED,48,LED,Current limiting is board-specific,Existing onboard function

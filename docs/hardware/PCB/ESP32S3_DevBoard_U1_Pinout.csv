@@ -1,0 +1,45 @@
+Side,PinIndex,Silkscreen,ProjectNet,ProjectFunction
+L,1,3V3,3V3,3.3V supply
+L,2,3V3,3V3,3.3V supply
+L,3,EN,EN,Reset/enable
+L,4,GPIO4,MIC_WS,I2S microphone WS
+L,5,GPIO5,MIC_SCK,I2S microphone SCK
+L,6,GPIO6,MIC_DIN,I2S microphone data input
+L,7,GPIO7,SPK_DOUT,I2S speaker data output
+L,8,GPIO15,SPK_BCLK,I2S speaker BCLK
+L,9,GPIO16,SPK_LRCK,I2S speaker LRCK
+L,10,GPIO17,VOL_DOWN,Volume down button
+L,11,GPIO18,SERVO_TILT_PWM,XOZ tilt servo PWM
+L,12,GPIO8,NC,Reserved
+L,13,GPIO3,NC,Reserved
+L,14,GPIO46,NC,Reserved/strapping caution
+L,15,GPIO9,NC,Reserved
+L,16,GPIO10,LAMP_CTRL,Lamp or LED control
+L,17,GPIO11,LCD_MOSI,ST7789 MOSI/SDA
+L,18,GPIO12,LCD_CLK,ST7789 SCL/SCK
+L,19,GPIO13,LCD_DC,ST7789 DC
+L,20,GPIO14,LCD_RST,ST7789 reset
+L,21,5V,5V_USB,5V from dev board USB/VBUS
+L,22,GND,GND,System ground
+R,1,GND,GND,System ground
+R,2,GPIO43,NC,Reserved/UART0 TXD caution
+R,3,GPIO44,NC,Reserved/UART0 RXD caution
+R,4,GPIO1,NC,Reserved
+R,5,GPIO2,LCD_BL,ST7789 backlight
+R,6,GPIO42,NC,Reserved/MTDO caution
+R,7,GPIO41,SERVO_PAN_PWM,XOY pan servo PWM
+R,8,GPIO40,VOL_UP,Volume up button
+R,9,GPIO39,VISION_UART_TX,ESP32 TX to MaixCam A17/RX
+R,10,GPIO38,VISION_UART_RX,ESP32 RX from MaixCam A16/TX through 4.7k/5.1k
+R,11,GPIO37,NC,Reserved
+R,12,GPIO36,NC,Reserved
+R,13,GPIO35,NC,Reserved
+R,14,GPIO0,BOOT,Boot button
+R,15,GPIO45,NC,Reserved/strapping caution
+R,16,GPIO48,LED_BUILTIN,Builtin LED
+R,17,GPIO47,TOUCH_KEY,Touch or button
+R,18,GPIO21,LCD_CS,ST7789 chip select
+R,19,GPIO20,NC,Reserved/USB D+
+R,20,GPIO19,NC,Reserved/USB D-
+R,21,GND,GND,System ground
+R,22,GND,GND,System ground

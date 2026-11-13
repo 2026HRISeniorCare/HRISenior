@@ -29,6 +29,7 @@
   - [6. 端云协同与隐私](#6-端云协同与隐私)
 - [串口通信与 MCP](#串口通信与-mcp)
 - [源码文件清单](#源码文件清单)
+- [仓库资料与源码补充](#仓库资料与源码补充)
 - [集成步骤](#集成步骤)
 - [功能清单与阶段性成果](#功能清单与阶段性成果)
 - [开发环境与固件](#开发环境与固件)
@@ -47,7 +48,7 @@
 **① 视觉驱动的双轴云台追踪**
 
 - **视觉定位**：MaixCAM Lite 使用 GC4653 摄像头检测人脸并输出边界框。
-- **双轴云台**：两个 SG90 舵机分别控制水平（Pan）与俯仰（Tilt），由 ESP32-S3 根据人脸中心偏差闭环跟随。
+- **双轴云台**：两个 MG90S 舵机分别控制水平（Pan）与俯仰（Tilt），由 ESP32-S3 根据人脸中心偏差闭环跟随。
 - **串口通信**：MaixCAM Lite 与 ESP32-S3 通过 UART1 双向通信，实际波特率为 115200。
 - **状态显示**：ESP32-S3 驱动 ST7789 屏幕显示设备、语音、视觉和融合状态。
 - **MCP 语音控制**：通过语音指令控制舵机旋转与追踪开关。
@@ -56,7 +57,7 @@
 
 将原有语音助手升级为**多模态情绪感知平台**：MaixCAM Lite 负责人脸检测与表情识别（FER），ESP32-S3 板载麦克风负责语音情绪识别（SER），两路证据通过 **Dempster-Shafer（D-S）证据理论**完成决策级融合。融合结果和模态冲突只上传到远端服务器记录，不在设备端播放警报，以免打断正常语音交互。
 
-> 当前实机：ESP32-S3 N16R8（`board->bread-compact-wifi`）+ Sipeed MaixCAM Lite + 双 SG90 云台 + ST7789 屏幕。K210 仅保留为早期研究原型，不属于当前实机链路。
+> 结题实机：ESP32-S3 N16R8（`board->bread-compact-wifi`）+ Sipeed MaixCAM Lite + 双 MG90S 云台 + ST7789 屏幕。K210 仅保留为早期研究原型，不属于结题实机链路。
 
 ---
 
@@ -87,6 +88,8 @@
 | 机器人与平台 | 完成 MaixCAM Lite、ESP32-S3、ST7789 显示屏和双 MG90S 舵机机器人原型，以及设备—服务器—Web 管理端协同系统 |
 
 结题信息依据学校 2026 年国家级大学生创新训练计划项目结题名单；论文与软著信息依据项目结题成果材料。
+
+可公开的结题报告、成果展板、国家级答辩材料、硬件设计资料和项目历史文档已整理到 [`docs/project-completion/`](docs/project-completion/)、[`docs/hardware/`](docs/hardware/) 与 [`docs/project-history/`](docs/project-history/)。被试明细、报销资料、证件照、制作缓存和大体积原始视频不在公开仓库中。
 
 
 ---
@@ -141,7 +144,7 @@
 | 视觉模型 / Vision models | `yolov8n_face` 人脸检测 + `face_emotion_bf16` 表情分类 |
 | 语音 / Audio | ESP32-S3 板载麦克风，16 kHz PCM，VAD + SER |
 | 显示 / Display | ST7789 LCD，由 ESP32-S3 驱动 |
-| 执行器 / Actuators | 2 × SG90：水平 Pan + 俯仰 Tilt |
+| 执行器 / Actuators | 2 × MG90S：水平 Pan + 俯仰 Tilt |
 | 云端 / Cloud | Xiaozhi 语音链路 + `https://sievox.cn/resona` 情绪数据与预警记录 |
 
 ### UART 接线 / UART Wiring
@@ -164,7 +167,7 @@
 | 水平 Pan | GPIO41 | 外部 5 V |
 | 俯仰 Tilt | GPIO18 | 外部 5 V |
 
-两个 SG90 必须使用稳定的外部 5 V 供电，舵机电源地、ESP32-S3 地和 MaixCAM Lite 地必须共地。不要从 ESP32-S3 的 3.3 V 引脚给舵机供电，否则舵机启动电流可能触发 Brownout。
+两个 MG90S 必须使用稳定的外部 5 V 供电，舵机电源地、ESP32-S3 地和 MaixCAM Lite 地必须共地。不要从 ESP32-S3 的 3.3 V 引脚给舵机供电，否则舵机启动电流可能触发 Brownout。
 
 
 ### MaixCAM Lite 运行参数 / Runtime Settings
@@ -349,7 +352,7 @@ ESP32 通过 `SendMcpMessage()` 将融合结果打包成如下 JSON,经现有 We
 - **边缘侧预处理**:依托 ESP32-S3 在本地完成 **VAD**(语音活动检测)与降噪,过滤无效底噪,仅上传核心意图,降低网络传输量与延迟。
 - **共情引擎**:云端接入轻量化大模型 **DeepSeek V3**,生成带情感色彩的回复文本,回端后由 **melotts** 合成情感语音。
 - **隐私合规**:原始**音频 / 人脸数据绝不上云**(物理级销毁),仅上行情绪状态与意图文本,满足最严格的隐私要求。
-- **网络延迟掩盖**(🚧 规划中):云端 API 往返约 1.5–2s,拟借助 FreeRTOS 多线程,在等待回传时先触发本地"点头"随动或"嗯嗯"微音频,用心理学反馈机制维持交互连贯。
+- **低延迟反馈研究设想（未部署）**：可在等待云端回复时加入本地动作或简短音频反馈，以改善交互连续性；该方向未计入结题实机的已完成功能。
 
 ---
 
@@ -490,6 +493,18 @@ void RegisterMcpTools() {
 
 > Smart-Aging 目录另含 `ds_simulator.html`、`visualization*.py`、`ds_monte_carlo_academic.png` 等蒙特卡洛仿真与学术可视化资料。
 
+## 仓库资料与源码补充
+
+| 路径 | 内容 |
+|---|---|
+| [`docs/`](docs/) | 结题、论文、硬件、项目历史与公开素材 |
+| [`source-overlays/research/`](source-overlays/research/) | 当前多模态实验脚本、结果与 UART/FER 实现 |
+| [`source-overlays/xiaozhi-esp32-server/`](source-overlays/xiaozhi-esp32-server/) | 当前 Resona 服务端管理模块与 Web 页面 |
+| `HRI-SeniorCare/` | ESP32-S3 固件工程子仓库 |
+| `Smart-Aging-Acoustic-Perception-and-Optimized-Localization-System/` | 研究工程子仓库 |
+
+`source-overlays/` 保存工作区中尚未进入子仓库提交的当前源码，路径与对应上游工程一致。服务端运行配置、用户数据和密钥未纳入公开仓库。
+
 ---
 
 ## 集成步骤
@@ -529,13 +544,13 @@ void RegisterMcpTools() {
 - 冲突量化与**掩饰型抑郁**预警
 - 情绪状态 JSON 经 MCP 通道上行至后端服务器(DeepSeek V3 / Qwen),生成共情回复
 
-### 结题验收状态（截至 2026-11-12）
+### 结题验收状态（截至 2026-11-13）
 
 | 方向 | 指标 / 成果 | 状态 |
 |------|-------------|------|
 | 语音交互闭环 | ESP32-S3 本地 VAD + 云端 ASR/LLM/TTS；已完成设备端对话与语音回复联调 | ✅ 已完成 |
 | 视觉识别与 UART | MaixCAM Lite GC4653、FER 推理、CRC-8 JSON 上报；实机串口持续接收 | ✅ 已完成 |
-| 双轴人脸跟踪 | MaixCAM Lite 人脸框驱动 GPIO41（Pan）与 GPIO18（Tilt）两路 SG90 | ✅ 已完成 |
+| 双轴人脸跟踪 | MaixCAM Lite 人脸框驱动 GPIO41（Pan）与 GPIO18（Tilt）两路 MG90S | ✅ 已完成 |
 | 端云数据链路 | 情绪融合结果上传 `https://sievox.cn/resona`，服务器记录情绪与冲突 | ✅ 已完成 |
 | 显示与交互 | ST7789 屏幕显示语音、视觉、融合和设备状态；热点前缀为 `Resona-xxxx` | ✅ 已完成 |
 | D-S 多模态融合 | ESP32-S3 静态可靠度与人脸置信降级版本已部署；动态 SNR/Lux 版本仍为研究扩展 | ✅ 基线完成 / 🧪 扩展仿真 |

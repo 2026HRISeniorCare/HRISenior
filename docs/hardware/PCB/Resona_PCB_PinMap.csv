@@ -1,0 +1,26 @@
+Category,Function,ESP32_GPIO,Direction,Connect_To,Series_or_Protection,Notes
+UART,MaixCam vision RX,GPIO38,Input,MaixCam Pro A16/TX,4.7k or 5.1k series resistor,Tested stable around 5k resistor
+UART,MaixCam vision TX,GPIO39,Output,MaixCam Pro A17/RX,Optional 0R jumper,Keep for bidirectional debug; can be DNP if one-way vision is enough
+UART,Vision baud rate,,,"MaixCam Pro UART",,115200 baud
+Servo,Pan XOY PWM,GPIO41,Output,SG90 Pan signal,,External 5V servo power required
+Servo,Tilt XOZ PWM,GPIO18,Output,SG90 Tilt signal,,External 5V servo power required
+Power,Servo 5V,,,SG90 VCC,470uF/1000uF capacitor footprint,Do not power servo from ESP32 3V3
+Power,Common ground,,,ESP32/MaixCam/Servo GND,,All grounds must be common
+Display,ST7789 MOSI,GPIO11,Output,ST7789 SDA/DIN,,SPI display
+Display,ST7789 CLK,GPIO12,Output,ST7789 SCL/SCK,,SPI display
+Display,ST7789 DC,GPIO13,Output,ST7789 DC,,SPI display
+Display,ST7789 RST,GPIO14,Output,ST7789 RST,,SPI display
+Display,ST7789 CS,GPIO21,Output,ST7789 CS,,SPI display
+Display,ST7789 BL,GPIO2,Output,ST7789 BL,,Backlight control
+Audio,I2S MIC WS,GPIO4,Clock,Microphone WS,,Simplex I2S mic
+Audio,I2S MIC SCK,GPIO5,Clock,Microphone SCK,,Simplex I2S mic
+Audio,I2S MIC DIN,GPIO6,Input,Microphone DATA,,Simplex I2S mic
+Audio,I2S SPK DOUT,GPIO7,Output,Speaker amp DIN,,I2S speaker output
+Audio,I2S SPK BCLK,GPIO15,Clock,Speaker amp BCLK,,I2S speaker output
+Audio,I2S SPK LRCK,GPIO16,Clock,Speaker amp LRCK,,I2S speaker output
+Button,Volume up,GPIO40,Input,Button,,Keep existing config
+Button,Volume down,GPIO17,Input,Button,,Moved from GPIO39 to avoid UART TX conflict
+Button,Boot,GPIO0,Input,BOOT button,,Do not reuse for external function
+Button,Touch,GPIO47,Input,Touch/Button,,Keep existing config
+LED,Builtin LED,GPIO48,Output,LED,,Keep existing config
+Lamp,Lamp,GPIO10,Output,Lamp/LED,,Keep existing config

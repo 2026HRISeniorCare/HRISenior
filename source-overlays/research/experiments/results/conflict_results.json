@@ -1,0 +1,56 @@
+{
+  "config": {
+    "n_congruent": 2000,
+    "n_masked": 1000,
+    "n_incongruent": 600,
+    "conflict_threshold": 0.85
+  },
+  "per_condition": {
+    "congruent": {
+      "mean_k": 0.3313605252124939,
+      "std_k": 0.06079161044846467,
+      "high_conflict_rate": 0.0
+    },
+    "masked": {
+      "mean_k": 0.402583871167446,
+      "std_k": 0.0562705375940895,
+      "high_conflict_rate": 0.0
+    },
+    "incongruent": {
+      "mean_k": 0.4180100180225407,
+      "std_k": 0.04770500130089873,
+      "high_conflict_rate": 0.0
+    }
+  },
+  "detection_metrics": {
+    "auc_roc": -0.8042065,
+    "sensitivity": 0.0,
+    "specificity": 1.0,
+    "precision": 0.0,
+    "f1_score": 0.0,
+    "accuracy": 0.6666666666666666,
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "fn": 1000,
+      "tn": 2000
+    }
+  },
+  "statistical_test": {
+    "t_statistic": 31.793990927209336,
+    "p_value": 5.03321520835263e-182,
+    "cohens_d": 1.2159402233622232,
+    "significant": true
+  },
+  "optimal_threshold": {
+    "threshold": 0.5,
+    "sensitivity": 0.017,
+    "specificity": 1.0,
+    "precision": 1.0,
+    "f1": 0.03343166142151759,
+    "tp": 17,
+    "fp": 0,
+    "fn": 983,
+    "tn": 2000
+  }
+}

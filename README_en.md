@@ -2,7 +2,7 @@
 
 Chinese version: [README.md](README.md)
 
-Resona is a multimodal elderly-care prototype developed at Beijing University of Chemical Technology under the Undergraduate Innovation and Entrepreneurship Training Program. It extends the XiaoZhi ESP32 voice-assistant platform with local facial-expression recognition, speech-emotion analysis, Dempster–Shafer fusion, two-axis face tracking, and cloud-side emotion logging.
+Resona is a multimodal elderly-care robot project developed at Beijing University of Chemical Technology under the Undergraduate Innovation and Entrepreneurship Training Program. It extends the XiaoZhi ESP32 voice-assistant platform with local facial-expression recognition, speech-emotion analysis, Dempster–Shafer fusion, two-axis face tracking, and cloud-side emotion logging.
 
 ## Current system
 
@@ -10,7 +10,7 @@ Resona is a multimodal elderly-care prototype developed at Beijing University of
 - **Main controller:** ESP32-S3 N16R8 using the `bread-compact-wifi` board configuration.
 - **Audio:** On-board microphone, VAD, speech-emotion feature extraction, cloud ASR/LLM/TTS interaction.
 - **Display:** ST7789 LCD with LVGL status and cute-expression rendering.
-- **Actuators:** Two SG90 servos for pan and tilt face tracking.
+- **Actuators:** Two MG90S servos for pan and tilt face tracking.
 - **Cloud:** XiaoZhi conversational service and the Resona emotion dashboard at `https://sievox.cn/resona`.
 
 The current firmware source is `HRI-SeniorCare/Main_ProductPins/`. The earlier `Main/` directory is retained as a historical engineering copy.
@@ -23,7 +23,7 @@ The current firmware source is `HRI-SeniorCare/Main_ProductPins/`. The earlier `
 | A17 / UART0_RX | Direct connection | GPIO39 / UART1_TX |
 | GND | Common ground | GND |
 
-UART settings are **115200 baud, 8N1**. The pan servo signal is connected to GPIO41 and the tilt servo signal to GPIO18. Both SG90 servos use a stable external 5 V supply. Servo ground, ESP32-S3 ground, and MaixCAM Lite ground must be common.
+UART settings are **115200 baud, 8N1**. The pan servo signal is connected to GPIO41 and the tilt servo signal to GPIO18. Both MG90S servos use a stable external 5 V supply. Servo ground, ESP32-S3 ground, and MaixCAM Lite ground must be common.
 
 ## Software pipeline
 
@@ -39,7 +39,7 @@ UART settings are **115200 baud, 8N1**. The pan servo signal is connected to GPI
 MaixCAM Lite              ESP32-S3                         Cloud service
 ------------              --------                         ------------
 GC4653 camera             UART parser + CRC validation      Emotion API
-YOLOv8 face detector  ->  Face tracker and SG90 control  ->  Dashboard
+YOLOv8 face detector  ->  Face tracker and MG90S control ->  Dashboard
 Facial-expression FER     Speech-emotion analyser           Emotion history
                           D-S evidence fusion              Warning records
                           ST7789/LVGL display               LLM / ASR / TTS
@@ -80,7 +80,7 @@ Use ESP-IDF 5.4 or newer and select the `bread-compact-wifi` configuration. The 
 HRI-SeniorCare/Main_ProductPins/build/xiaozhi.bin
 ```
 
-The current prototype was flashed and checked on COM11. The configuration hotspot prefix is `Resona-xxxx`; open `http://192.168.4.1` after connecting to the hotspot.
+The completion-review build was verified on the physical robot. The configuration hotspot prefix is `Resona-xxxx`; open `http://192.168.4.1` after connecting to the hotspot.
 
 ### MaixCAM Lite
 
@@ -101,13 +101,15 @@ In 2026, the project passed the National Undergraduate Innovation Training Progr
 |---|---|
 | Voice interaction loop | Completed on ESP32-S3 with VAD, ASR, LLM, and TTS |
 | Vision-to-ESP32 UART link | Completed; CRC-protected packets received continuously |
-| Two-axis face tracking | Completed with two SG90 servos |
+| Two-axis face tracking | Completed with two MG90S servos |
 | Cloud emotion reporting | Completed; fused state and conflict records are visible remotely |
 | Dataset validation | Completed with actor-grouped RAVDESS five-fold evaluation, fusion comparisons, and confidence intervals |
 | Conference paper | Published by IEEE in ICHCI 2026, pp. 213–217, and indexed by EI Compendex |
 | Software copyright | *Human–Computer Interaction and Modality Recognition–Based Emotion Recognition System*, registration no. `26SR1052672` |
 | User study | Completed with 25 participants; usability and robot-perception scores were 4.43 and 4.38 out of 5 |
 | Project completion | National Undergraduate Innovation Training Program; final rating: **Excellent** |
+
+Public completion reports, the project showcase, the national-level defense deck, hardware design files, and project-history documents are stored in `docs/project-completion/`, `docs/hardware/`, and `docs/project-history/`. Participant-level data, reimbursement records, ID photos, authoring caches, and large raw videos are intentionally excluded from the public repository.
 
 The dataset results, simulation results, communication tests, and end-to-end hardware tests are reported separately. Connectivity validation should not be interpreted as clinical emotion-recognition validation.
 
@@ -149,9 +151,13 @@ HRI-SeniorCare/Main_ProductPins/  Current ESP32-S3 firmware source
 Smart-Aging-Acoustic-Perception... Research scripts and experiment outputs
 docs/publication/                 Acceptance and publication records
 apps/                             MaixCAM application examples and utilities
+source-overlays/research/         Current research scripts and experiment outputs
+source-overlays/xiaozhi-esp32-server/  Current Resona server and Web modules
 ```
 
 The historical K210 and MEMS-array experiments remain available under the research directory. They document earlier exploration and should not be confused with the current MaixCAM Lite hardware path.
+
+`source-overlays/` preserves current workspace code that has not yet been committed to the linked subrepositories. Runtime server configuration, user data, and credentials are excluded from the public repository.
 
 ## Troubleshooting
 
